@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring.security">
+
+<head th:replace="layout/plantillas :: head">
+	<title>Inventario | Clientes</title>
+
+</head>
+
+<body class="container ">
+
+	<!--        <header th:replace="layout/plantillas :: header"></header>-->
+	<nav th:replace="layout/plantillas :: nav"></nav>
+
+	<div>
+		<h1 class="my-3">Clientes:</h1>
+		<h2 class="mb-3">Seleccione un cliente para iniciar el inventario</h2>
+
+		<form method="get" th:action="@{/inventarios/listarClientes}" class="row g-3">
+			<div class="col-3 d-flex">
+				<label for="filtro" class="col-form-label">Filtrar</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" name="filtro" class="form-control" id="filtro"
+					placeholder="Ingrese nombre de cliente">
+			</div>
+			<div class="col-3">
+				<button type="submit" class="btn btn-secondary">
+					<i class="fa-solid fa-magnifying-glass text-white" style="font-size: 16pt"></i>
+				</button>
+			</div>
+		</form>
+
+		<div class="mt-4 w-75" th:if="${clientes != null and !clientes.empty}">
+			<table class="table">
+				<thead>
+					<tr class="bg-secondary text-white">
+						<th>#</th>
+						<th>Logo</th>
+						<th>Nombre Cliente</th>
+						<th>Seleccione</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="cli, num : ${listaClientes}">
+						<td class="align-middle">[[${cli.idCliente}]]</td>
+						<td class="align-middle">
+							<img th:src="@{'/img/clientes/'}+ ${cli.imagen}" th:alt="${cli.imagen}">
+						</td>
+						<td class="align-middle" th:text="${cli.nomCliente}"></td>
+						<td class="align-middle text-center">
+							<a th:href="@{'inventarios/listarProductos/' + ${cli.idCliente}}">
+								<i class="fa-solid fa-file-signature text-warning fs-3"></i>
+							</a>
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+			<!--			<div th:if="${totalPaginas >= 1}">-->
+			<!--				<div class="row col-sm">-->
+			<!--					<div class="col-sm">-->
+			<!--						Total registros: [[${totalClientes}]]-->
+			<!--					</div>-->
+			<!--					<div class="col-sm">-->
+			<!--						<span th:each="i: ${#numbers.sequence(1, totalPaginas)}">-->
+			<!--							<a th:if="${paginaActual != i}" th:href="@{'/inventarios/listarClientes/page/'+ ${i}}"-->
+			<!--								class="btn btn-secondary">[[${i}]]</a>-->
+			<!--							<span th:unless="${paginaActual != i}">[[${i}]]</span>-->
+			<!--						</span>-->
+			<!--					</div>-->
+			<!--				</div>-->
+			<!--			</div>-->
+		</div>
+
+		<!-- AVISO DE INFORMACIÓN NO ENCONTRADA -->
+		<div th:if="${clientes == null or clientes.empty}" class="col-auto mt-4">
+			<div class="alert alert-warning alert-dismissible fade show" role="alert">
+				<strong>AVISO! </strong>No se encontraron registros
+			</div>
+		</div>
+	</div>
+
+
+	<footer th:replace="layout/plantillas :: footer"></footer>
+
+	<script>
+		document.title = 'Inventario';
+	</script>
+</body>
+
+</html>

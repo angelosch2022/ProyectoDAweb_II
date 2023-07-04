@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring.security">
+
+<head th:replace="layout/plantillas :: head">
+	<title>Home</title>
+
+</head>
+
+<body class="container ">
+
+	<!--        <header th:replace="layout/plantillas :: header"></header>-->
+	<nav th:replace="layout/plantillas :: nav"></nav>
+	<div>
+		<h1 class="mt-3 mb-2">BIENVENIDO:</h1>
+		<h2 class="my-3">Seleccione una opción</h2>
+<!--		<div class="row text-center mt-5 ">-->
+<!--			<div class="col-sm py-3">-->
+<!--				<img th:src="@{img/clientes.png}" style="max-width: 400px;">-->
+<!--				<p class="my-3"> <a th:href="@{inventarios/listarClientes}" class="btn btn-dark">Clientes</a></p>-->
+<!--			</div>-->
+<!--			<div class="col-sm py-3">-->
+<!--				<img th:src="@{img/productos.jpg}" style="max-width: 400px;">-->
+<!--				<p class="my-3"> <a th:href="@{inventarios/listarProductos}" class="btn btn-dark">Productos</a></p>-->
+<!--			</div>-->
+<!--			<div class="col-sm py-3">-->
+<!--				<img th:src="@{img/inventario.png}" style="max-width: 400px;">-->
+<!--				<p class="my-3"><a th:href="@{inventarios/listarInventarios}" class="btn btn-dark">Inventarios</a></p>-->
+<!--			</div>-->
+<!--			<div class="col-sm py-3">-->
+<!--				<img th:src="@{img/consultas.jpg}" style="max-width: 400px;">-->
+<!--				<p class="my-3"> <a th:href="@{inventarios/listarClientes}" class="btn btn-dark">Consultar</a></p>-->
+<!--			</div>-->
+
+<!--		</div>-->
+
+		<div class="row text-center">
+
+			<div class="col-md-4 a-scale mt-2">
+				<a class="text-decoration-none text-secondary">
+					<div class="card p-2">
+						<img th:src="@{img/clientes.png}" class="card-img-top" alt="..." />
+						<div class="card-body">
+							<p class="card-text mt-3">
+								<a th:href="@{inventarios/listarClientes}" class="btn btn-dark col-sm-5">Ver Clientes</a>
+							</p>
+						</div>
+					</div>
+				</a>
+			</div>
+
+			<div class="col-md-4 a-scale mt-2">
+				<a class="text-decoration-none text-secondary ">
+					<div class="card p-2">
+						<img th:src="@{img/productos.jpg}" class="card-img-top" alt="..." />
+						<div class="card-body">
+							<p class="card-text mt-3">
+								<a th:href="@{inventarios/listarProductos}" class="btn btn-dark col-sm-5">Ver Productos</a>
+							</p>
+						</div>
+					</div>
+				</a>
+			</div>
+
+			<div class="col-md-4 a-scale mt-2">
+				<a class="text-decoration-none text-secondary">
+					<div class="card p-2">
+						<img th:src="@{img/inventario.png}" class="card-img-top" alt="..." />
+						<div class="card-body">
+							<p class="card-text mt-3">
+								<a th:href="@{inventarios/listarInventarios}" class="btn btn-dark col-sm-5">Ver Inventarios</a>
+							</p>
+						</div>
+					</div>
+				</a>
+			</div>
+
+			<div class="col-md-4 a-scale mt-2">
+				<a class="text-decoration-none text-secondary">
+					<div class="card p-2">
+						<img th:src="@{img/consultas.jpg}" class="card-img-top" alt="..." />
+						<div class="card-body">
+							<p class="card-text mt-3">
+								<a th:href="@{reportes/Consultas}" class="btn btn-dark col-sm-5">Consultas</a>
+							</p>
+						</div>
+					</div>
+				</a>
+			</div>
+
+		</div>
+
+	</div>
+	<footer th:replace="layout/plantillas :: footer"></footer>
+
+	<script>
+		document.title = 'Inicio';
+	</script>
+</body>
+
+</html>
