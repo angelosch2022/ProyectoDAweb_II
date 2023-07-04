@@ -14,7 +14,6 @@ import com.cibertec.proyectoDAWeb_ii.model.Producto;
 import com.cibertec.proyectoDAWeb_ii.service.ProductoService;
 import com.cibertec.proyectoDAWeb_ii.service.VwProductoService;
 
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller

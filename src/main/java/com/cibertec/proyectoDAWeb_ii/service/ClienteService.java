@@ -1,6 +1,5 @@
 package com.cibertec.proyectoDAWeb_ii.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +17,10 @@ public class ClienteService {
 	private ClienteRepository repository;
 	
 	public List<Cliente> GetAll(){
-		List<Cliente> clientes = new ArrayList<Cliente>();
-		repository.findAll().forEach(x -> clientes.add(x));
-		
-		return clientes;
+//		List<Cliente> clientes = new ArrayList<Cliente>();
+//		repository.findAll().forEach(x -> clientes.add(x));
+//		
+		return repository.findAll();
 	}
 	
 	public Cliente Get(int id) {

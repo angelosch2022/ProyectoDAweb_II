@@ -35,7 +35,7 @@ public class Producto implements Serializable {
 	private int idTipoBulto;*/
 
 	@Column(name="is_inventariado")
-	private Object isInventariado;
+	private boolean isInventariado;
 
 	@Column(name="sku_producto")
 	private String skuProducto;

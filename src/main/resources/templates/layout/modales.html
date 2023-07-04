@@ -1,331 +1,362 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://www.thymeleaf.org"
-       xmlns="http://www.w3.org/1999/xhtml"
-       xmlns:sec="http://www.thymeleaf.org/extras/spring.security"
-       >
-    <head th:replace="layout/plantillas :: head"> 
-        <title>Mantenimiento Clientes</title>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring.security">
 
-    </head>
-    <body>
+<head th:replace="layout/plantillas :: head">
+	<title>Mantenimiento Clientes</title>
 
-        <!-- AGREGAR - MODIFICAR CLIENTE -->
-        <section th:fragment="agregar-cliente">
-            <div id="modal-agregar" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" >
-                <div class="modal-dialog modal-dialog-centered" >
-                    <div class="modal-content">
+</head>
 
-                        <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title">
-                                <i th:replace="layout/plantillas :: icon-user-maint"></i> 
-                                [[#{titulo.modal-cliente}]]
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
+<body>
 
-                        <form th:action="@{/guardar-cliente}" method="post" th:object="${cliente}" class="was-validated">
-                            <input type="hidden" id="cod_cli" name="cod_cli" th:field="*{cod_cli}" value="1"/>
-                            <div class="modal-body">
+	<!-- AGREGAR INVENTARIO -->
+	<section th:fragment="agregar-inventario">
+		<div id="modal-agregar" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
 
-                                <div class="row mb-3"   >
-                                    <label for="ruc_cli" class="col-md-4 col-form-label text-start">[[#{cliente.ruc}]]</label>
-                                    <div class="col-md-5"  >
-                                        <input type="text" class="form-control" id="ruc_cli" style="width: 100%;" required="true" th:field="*{ruc_cli}"/>
-                                    </div>
-                                    <!--                                    <div class="col-md-2">
-                                                                            <a href="#" class="btn btn-success" id="btnBuscar"><i th:replace="layout/plantillas :: icon-search"></i></a>
-                                                                        </div>-->
-                                </div>
+					<div class="modal-header bg-primary text-white mb-4">
+						<h5 class="modal-title">
+							<i class="fa-solid fa-file-signature text-white fs-3"></i>
+							INVENTARIO
+						</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
 
-                                <!--                                 AVISO DE INFORMACIÓN NO ENCONTRADA 
-                                                                <div class="col-auto" style="display: none">
-                                                                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                                                        <strong>[[#{mensaje.aviso}]]</strong>[[#{mensaje.cliente-no-encontrado}]]
-                                                                    </div>
-                                                                </div>-->
+					<form th:action="@{/inventarios/guardarInventario}" method="post" th:object="${inventario}"
+						class="was-validated">
+						<input type="hidden" id="idInventario" name="idInventario" th:field="*{idInventario}" >
+						<input type="hidden" id="idProducto" name="idProducto" th:field="*{producto.idProducto}" >
+						<input id="saldoProducto" type="hidden" disabled th:field="*{saldoProducto}">
+						<input id="idUser" type="hidden" disabled th:field="*{usuario.idUsuario}" value="1">
+						<input id="fecha" type="hidden" disabled th:field="*{fechaInventario}" >
+						
+						<div class="modal-body">
 
-                                <div class="row mb-3">
-                                    <label for="nom_cli" class="col-md-4 col-form-label text-start">[[#{cliente.nombre}]]</label>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" id="nom_cli"  style="width: 100%; " required="true" th:field="*{nom_cli}"/>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="direc_cli" class="col-md-4 col-form-label text-start">[[#{cliente.direccion}]]</label>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" id="direc_cli" style="width: 100%; " required="true" th:field="*{direc_cli}"/>
-                                    </div>
-                                </div>
-                                <!--                                <div class="row mb-3">
-                                                                    <label for="cod_distrito" class="col-md-4 col-form-label text-start">[[#{cliente.distrito}]]</label>
-                                                                    <div class="col-md-6">
-                                                                        <select id="cod_distrito" class="form-select">
-                                                                            <option value="1">CALLAO</option>
-                                                                            <option value="2">BREÑA</option>
-                                                                            <option value="3">LOS OLIVOS</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>-->
+							<!--							<div class="row mb-3">-->
+							<!--								<label for="descProducto"-->
+							<!--									class="col-md-4 col-form-label text-start">Descripción:</label>-->
+							<!--								<div class="col-md-7">-->
+							<!--									<input id="descProducto" type="text"  class="form-control"  disabled>-->
+							<!--								</div>-->
+							<!--							</div>-->
 
-                            </div>
-                            <div class="modal-footer bg-light">
-                                <a href="#" class="btn btn-outline-secondary col-auto" data-bs-dismiss="modal" >[[#{accion.cancelar}]]</a> |
-                                <input type="submit" th:value="#{accion.guardar}" class="btn btn-primary  col-auto"/>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
+							<!--							<div class="row mb-3">-->
+							<!--								<label for="saldoProducto"-->
+							<!--									class="col-md-4 col-form-label text-start"> Saldo:</label>-->
+							<!--								<div class="col-md-3">-->
+							<!--									<input id="saldoProducto" type="text"  class="form-control"  disabled th:field="*{saldoProducto}">  -->
+							<!--									<label id="tipoBulto"></label>-->
+							<!--								</div>-->
+							<!--							</div>-->
+							<h3 id="descProductoLabel" class="text-center">Descripción</h3>
+							<h4 id="saldoProductoLabel" class="text-center">Saldo</h4>
 
-        <!-- MODAL ELIMINAR CLIENTE -->
-        <section  th:fragment="eliminar-cliente">
-            <div class="modal fade"  id="modal-eliminar" data-bs-backdrop="static" data-bs-keyboard="false" >
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header  bg-light">
-                            <h4 class="modal-title text-secondary" id="">[[#{titulo.eliminar-cliente}]]</h4>
-                            <button type="button" class="btn-close cancelar" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
+							<div class="row mt-4 mb-2">
+								<label for="cantInventario" class="col-md-5 col-form-label text-start">Cantidad
+									Inventariada</label>
+								<div class="col-md-5">
+									<input type="text" class="form-control" id="cantInventario" style="width: 100%;"
+										required="true" th:field="*{cantInventario}" />
+								</div>
+							</div>
 
-                        <div class="modal-body">
-                            <h5 class="text-secondary">[[#{mensaje.eliminar-registro}]]</h5>
-                            <p>[[#{mensaje.no-puede-revertir}]]</p>
-                        </div>
+						</div>
+						<div class="modal-footer bg-light">
 
-                        <div class="modal-footer bg-light">
-                            <button class="btn btn-outline-secondary cancelar" data-bs-dismiss="modal">[[#{accion.cancelar}]]</button>
-                            <a th:href="@{/}" type="submit" class="btn btn-outline-danger" id="btnEliminarFinal">[[#{accion.eliminar}]]</a>
-                        </div>
+							<button href="#" class="btn btn-outline-secondary col-auto" data-bs-dismiss="modal">Cancelar</button>
+							|
+							<input type="submit" th:value="Guardar" class="btn btn-warning  col-auto" />
 
-                    </div>
-                </div>
-            </div>
-        </section>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
 
-        <!-- 2 ---------------------------------------------------------------------------------------------------------------------------------------------------- -->
-        <!-- AGREGAR - MODIFICAR CONTACTO -->
-        <section th:fragment="agregar-contacto">
-            <div id="modal-agregar" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" >
-                <div class="modal-dialog modal-dialog-centered modal-lg" >
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title">
-                                <i th:replace="layout/plantillas :: icon-user-maint"></i> 
-                                [[#{titulo.modal-contacto}]]
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form th:action="@{/guardar-contacto}" method="post" class="was-validated">
-                            <input type="hidden" id="id" name="cod_contacto"/>
+	<!--	 MODAL ELIMINAR INVENTARIO -->
+	<!--	<section th:fragment="eliminar-inventario">-->
+	<!--		<div class="modal fade" id="modal-eliminar" data-bs-backdrop="static" data-bs-keyboard="false">-->
+	<!--			<div class="modal-dialog modal-dialog-centered">-->
+	<!--				<div class="modal-content">-->
+	<!--					<div class="modal-header  bg-light">-->
+	<!--						<h4 class="modal-title text-secondary" id="">[[#{titulo.eliminar-cliente}]]</h4>-->
+	<!--						<button type="button" class="btn-close cancelar" data-bs-dismiss="modal"-->
+	<!--							aria-label="Close"></button>-->
+	<!--					</div>-->
 
-                            <div class="modal-body">
-                                <div class="row mb-3"   >
-                                    <label for="nom_contacto" class="col-md-4 col-form-label text-start">[[#{contacto.nombres}]]</label>
-                                    <div class="col-md-8">
-                                        <input type="text" name="nom_contacto" class="form-control" id="nom_contacto" style="width: 100%; " autofocus="autofocus" required="required"/>
-                                        <!--<span th:if="${#fields.hasErrors('nom_contacto')}" th:errors="*{nom_contacto}">validacion</span>-->
-                                    </div>
-                                </div>
+	<!--					<div class="modal-body">-->
+	<!--						<h5 class="text-secondary">[[#{mensaje.eliminar-registro}]]</h5>-->
+	<!--						<p>[[#{mensaje.no-puede-revertir}]]</p>-->
+	<!--					</div>-->
 
-                                <div class="row mb-3">
-                                    <label for="apellidos_contacto" class="col-md-4 col-form-label text-start">APELLIDOS</label>
-                                    <div class="col-md-8">
-                                        <input type="text" name="ape_contacto"  class="form-control" id="ape_contacto"  style="width: 100%; "  required="required"/>
-                                        <!-- <span th:if="${#fields.hasErrors('ape_pat_contacto')}" th:errors="*{ape_pat_contacto}">validacion</span>-->
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="doc_contacto" class="col-md-4 col-form-label text-start">[[#{contacto.num-doc}]]</label>
-                                    <div class="col-md-5">
-                                        <input type="text" name="doc_contacto"  class="form-control" id="doc_contacto"  style="width: 100%; " required="required" />
-                                        <!--<span th:if="${#fields.hasErrors('doc_contacto')}" th:errors="*{doc_contacto}">validacion</span>-->
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="tel_contacto" class="col-md-4 col-form-label text-start">[[#{contacto.telefono}]]</label>
-                                    <div class="col-md-5">
-                                        <input type="text"  name="tel_contacto"  class="form-control" id="tel_contacto"  style="width: 100%; "  required="required"/>
-                                        <!--<span th:if="${#fields.hasErrors('tel_contacto')}" th:errors="*{tel_contacto}">validacion</span>-->
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="mail_contacto" class="col-md-4 col-form-label text-start">[[#{contacto.email}]]</label>
-                                    <div class="col-md-8">
-                                        <input type="text"  name="mail_contacto"  class="form-control" id="mail_contacto"  style="width: 100%; "  required="required"/>
-                                        <!--<span th:if="${#fields.hasErrors('mail_contacto')}" th:errors="*{mail_contacto}">validacion</span>-->
-                                    </div>
-                                </div>
+	<!--					<div class="modal-footer bg-light">-->
+	<!--						<button class="btn btn-outline-secondary cancelar"-->
+	<!--							data-bs-dismiss="modal">[[#{accion.cancelar}]]</button>-->
+	<!--						<a th:href="@{/}" type="submit" class="btn btn-outline-danger"-->
+	<!--							id="btnEliminarFinal">[[#{accion.eliminar}]]</a>-->
+	<!--					</div>-->
 
+	<!--				</div>-->
+	<!--			</div>-->
+	<!--		</div>-->
+	<!--	</section>-->
 
-                                <div class="row mb-3">
-                                    <label for="nom_usu" class="col-md-4 col-form-label text-start">USUARIO</label>
-                                    <div class="col-md-5">
-                                        <input type="text"  name="nom_usuario"  class="form-control" id="nom_usu"  style="width: 100%; " required="required"/>
-                                        <!--<span th:if="${#fields.hasErrors('nom_usu')}" th:errors="*{nom_usu}">validacion</span>-->
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="pass_usu" class="col-md-4 col-form-label text-start">CONTRASEÑA</label>
-                                    <div class="col-md-5">
-                                        <input type="password"  name="pass_usu" class="form-control" id="pass_usu" style="width: 100%; " required="required" />
-                                        <!--<span th:if="${#fields.hasErrors('pass_usu')}" th:errors="*{pass_usu}">validacion</span>-->
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="nom_cli" class="col-md-4 col-form-label text-start">CLIENTE</label>
-                                    <div class="col-md-5">
-                                        <select class="form-select" id="cod_cli" name="cod_cliente" required="required">
-                                            <th:block th:if="${clientes!=null and !clientes.empty}" th:each="c : ${clientes}" th:field="*{contacto.cliente}">
-                                                <option th:value="${c.cod_cli}" th:text="${c.nom_cli}"></option>
-                                            </th:block>
-                                        </select>
+	<!-- 2 ---------------------------------------------------------------------------------------------------------------------------------------------------- -->
+	<!-- AGREGAR - MODIFICAR CONTACTO -->
+	<section th:fragment="agregar-contacto">
+		<div id="modal-agregar" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false">
+			<div class="modal-dialog modal-dialog-centered modal-lg">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-white">
+						<h5 class="modal-title">
+							<i th:replace="layout/plantillas :: icon-user-maint"></i>
+							[[#{titulo.modal-contacto}]]
+						</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<form th:action="@{/guardar-contacto}" method="post" class="was-validated">
+						<input type="hidden" id="id" name="cod_contacto" />
 
-                                    </div>
-                                </div>
+						<div class="modal-body">
+							<div class="row mb-3">
+								<label for="nom_contacto"
+									class="col-md-4 col-form-label text-start">[[#{contacto.nombres}]]</label>
+								<div class="col-md-8">
+									<input type="text" name="nom_contacto" class="form-control" id="nom_contacto"
+										style="width: 100%; " autofocus="autofocus" required="required" />
+									<!--<span th:if="${#fields.hasErrors('nom_contacto')}" th:errors="*{nom_contacto}">validacion</span>-->
+								</div>
+							</div>
 
-                            </div>
-                            <div class="modal-footer bg-light">
-                                <a href="#" class="btn btn-outline-secondary col-auto" data-bs-dismiss="modal" >[[#{accion.cancelar}]]</a> |
-                                <input type="submit" th:value="#{accion.guardar}" class="btn btn-primary  col-auto"/>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- MODAL ELIMINAR CONTACTO -->
-        <section  th:fragment="eliminar-contacto">
-            <div class="modal fade"  id="modal-eliminar" data-bs-backdrop="static" data-bs-keyboard="false" >
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header  bg-light">
-                            <h4 class="modal-title text-secondary" id="">[[#{titulo.eliminar-contacto}]]</h4>
-                            <button type="button" class="btn-close cancelar" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            <h5 class="text-secondary">[[#{mensaje.eliminar-registro}]]</h5>
-                            <p>[[#{mensaje.no-puede-revertir}]]</p>
-                        </div>
-
-                        <div class="modal-footer bg-light">
-                            <button class="btn btn-outline-secondary cancelar" data-bs-dismiss="modal">[[#{accion.cancelar}]]</button>
-                            <a th:href="@{/}" type="submit" class="btn btn-outline-danger" id="btnEliminarFinal">[[#{accion.eliminar}]]</a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3 ---------------------------------------------------------------------------------------------------------------------------------------------------- -->
-
-        <!-- AGREGAR - MODIFICAR EMPLEADO -->
-        <section th:fragment="agregar-empleado">
-            <div id="modal-agregar" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" >
-                <div class="modal-dialog modal-dialog-centered" >
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title">
-                                <i th:replace="layout/plantillas :: icon-user-maint"></i> 
-                                [[#{titulo.modal-empleado}]]
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form th:action="@{/guardar-empleado}" method="post" th:object="${empleado}" class="was-validated" >
-                            <input type="hidden" id="id" name="cod_emp" th:field="*{cod_emp}"/>
-
-                            <div class="modal-body">
-
-                                <div class="row mb-3"   >
-                                    <label for="dni_emp" class="col-md-4 col-form-label text-start">DNI</label>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" id="dni_emp" style="width: 100%; " autofocus="autofocus" name="dni_emp" th:field="*{dni_emp}"  required="required"/>
-                                        <!--<span th:if="${#fields.hasErrors('nom_emp')}" th:errors="*{nom_emp}">validacion</span>-->
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <label for="nom_emp" class="col-md-4 col-form-label text-start">[[#{empleado.nombres}]]</label>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" id="nom_emp"  style="width: 100%; " name="emp_nom" th:field="*{nom_emp}"  required="required"/>
-                                        <!--<span th:if="${#fields.hasErrors('apepat_emp')}" th:errors="*{apepat_emp}">validacion</span>-->
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="ape_emp" class="col-md-4 col-form-label text-start">APELLIDOS</label>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" id="ape_emp"  style="width: 100%; " name="emp_ape" th:field="*{ape_emp}" required="required"/>
-                                        <!--<span th:if="${#fields.hasErrors('apemat_emp')}" th:errors="*{apemat_emp}">validacion</span>-->
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-md-4 col-form-label text-start">[[#{empleado.rol}]]</label>
-                                    <div class="col-md-5">
-                                        <select id="cod_rol" class="form-select" name="rol_cod"  required="required">
-                                            <option value="1" label="ROLE_ADMIN"></option>
-                                            <option value="2" label="ROLE_CLIENTE"></option>
-                                            <option value="3" label="ROLE_JEFE_ALMACEN"></option>
-                                            <option value="4" label="ROLE_VIGILANTE"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="nom_usu" class="col-md-4 col-form-label text-start">[[#{empleado.user}]]</label>
-                                    <div class="col-md-5">
-                                        <input type="text" class="form-control" id="nom_usu"  style="width: 100%; " name="usu_nom"  required="required"/>
-                                        <!--<span th:if="${#fields.hasErrors('nom_usu')}" th:errors="*{nom_usu}">validacion</span>-->
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="pass_usu" class="col-md-4 col-form-label text-start">[[#{empleado.pass}]]</label>
-                                    <div class="col-md-5">
-                                        <input type="password" class="form-control" id="pass_usu" style="width: 100%; " name="usu_pass"  required="required"/>
-                                        <!--<span th:if="${#fields.hasErrors('pass_usu')}" th:errors="*{pass_usu}">validacion</span>-->
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <input type="hidden" id="id_usu" name="id_usu" th:field="*{usuario}"/>
-                                </div>
-
-                            </div>
-                            <div class="modal-footer bg-light">
-                                <a href="#" class="btn btn-outline-secondary col-auto" data-bs-dismiss="modal" >[[#{accion.cancelar}]]</a> |
-                                <input type="submit" th:value="#{accion.guardar}" class="btn btn-primary  col-auto"/>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- MODAL ELIMINAR EMPLEADO -->
-        <section  th:fragment="eliminar-empleado">
-            <div class="modal fade"  id="modal-eliminar" data-bs-backdrop="static" data-bs-keyboard="false" >
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header  bg-light">
-                            <h4 class="modal-title text-secondary" id="">[[#{titulo.eliminar-empleado}]]</h4>
-                            <button type="button" class="btn-close cancelar" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            <h5 class="text-secondary">[[#{mensaje.eliminar-registro}]]</h5>
-                            <p>[[#{mensaje.no-puede-revertir}]]</p>
-                        </div>
-
-                        <div class="modal-footer bg-light">
-                            <button class="btn btn-outline-secondary cancelar" data-bs-dismiss="modal">[[#{accion.cancelar}]]</button>
-                            <a th:href="@{/}" type="submit" class="btn btn-outline-danger" id="btnEliminarFinal">[[#{accion.eliminar}]]</a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </section>
+							<div class="row mb-3">
+								<label for="apellidos_contacto"
+									class="col-md-4 col-form-label text-start">APELLIDOS</label>
+								<div class="col-md-8">
+									<input type="text" name="ape_contacto" class="form-control" id="ape_contacto"
+										style="width: 100%; " required="required" />
+									<!-- <span th:if="${#fields.hasErrors('ape_pat_contacto')}" th:errors="*{ape_pat_contacto}">validacion</span>-->
+								</div>
+							</div>
+							<div class="row mb-3">
+								<label for="doc_contacto"
+									class="col-md-4 col-form-label text-start">[[#{contacto.num-doc}]]</label>
+								<div class="col-md-5">
+									<input type="text" name="doc_contacto" class="form-control" id="doc_contacto"
+										style="width: 100%; " required="required" />
+									<!--<span th:if="${#fields.hasErrors('doc_contacto')}" th:errors="*{doc_contacto}">validacion</span>-->
+								</div>
+							</div>
+							<div class="row mb-3">
+								<label for="tel_contacto"
+									class="col-md-4 col-form-label text-start">[[#{contacto.telefono}]]</label>
+								<div class="col-md-5">
+									<input type="text" name="tel_contacto" class="form-control" id="tel_contacto"
+										style="width: 100%; " required="required" />
+									<!--<span th:if="${#fields.hasErrors('tel_contacto')}" th:errors="*{tel_contacto}">validacion</span>-->
+								</div>
+							</div>
+							<div class="row mb-3">
+								<label for="mail_contacto"
+									class="col-md-4 col-form-label text-start">[[#{contacto.email}]]</label>
+								<div class="col-md-8">
+									<input type="text" name="mail_contacto" class="form-control" id="mail_contacto"
+										style="width: 100%; " required="required" />
+									<!--<span th:if="${#fields.hasErrors('mail_contacto')}" th:errors="*{mail_contacto}">validacion</span>-->
+								</div>
+							</div>
 
 
-    </body>
+							<div class="row mb-3">
+								<label for="nom_usu" class="col-md-4 col-form-label text-start">USUARIO</label>
+								<div class="col-md-5">
+									<input type="text" name="nom_usuario" class="form-control" id="nom_usu"
+										style="width: 100%; " required="required" />
+									<!--<span th:if="${#fields.hasErrors('nom_usu')}" th:errors="*{nom_usu}">validacion</span>-->
+								</div>
+							</div>
+							<div class="row mb-3">
+								<label for="pass_usu" class="col-md-4 col-form-label text-start">CONTRASEÑA</label>
+								<div class="col-md-5">
+									<input type="password" name="pass_usu" class="form-control" id="pass_usu"
+										style="width: 100%; " required="required" />
+									<!--<span th:if="${#fields.hasErrors('pass_usu')}" th:errors="*{pass_usu}">validacion</span>-->
+								</div>
+							</div>
+							<div class="row mb-3">
+								<label for="nom_cli" class="col-md-4 col-form-label text-start">CLIENTE</label>
+								<div class="col-md-5">
+									<select class="form-select" id="cod_cli" name="cod_cliente" required="required">
+										<th:block th:if="${clientes!=null and !clientes.empty}"
+											th:each="c : ${clientes}" th:field="*{contacto.cliente}">
+											<option th:value="${c.cod_cli}" th:text="${c.nom_cli}"></option>
+										</th:block>
+									</select>
+
+								</div>
+							</div>
+
+						</div>
+						<div class="modal-footer bg-light">
+							<a href="#" class="btn btn-outline-secondary col-auto"
+								data-bs-dismiss="modal">[[#{accion.cancelar}]]</a> |
+							<input type="submit" th:value="#{accion.guardar}" class="btn btn-primary  col-auto" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- MODAL ELIMINAR CONTACTO -->
+	<section th:fragment="eliminar-contacto">
+		<div class="modal fade" id="modal-eliminar" data-bs-backdrop="static" data-bs-keyboard="false">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header  bg-light">
+						<h4 class="modal-title text-secondary" id="">[[#{titulo.eliminar-contacto}]]</h4>
+						<button type="button" class="btn-close cancelar" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+
+					<div class="modal-body">
+						<h5 class="text-secondary">[[#{mensaje.eliminar-registro}]]</h5>
+						<p>[[#{mensaje.no-puede-revertir}]]</p>
+					</div>
+
+					<div class="modal-footer bg-light">
+						<button class="btn btn-outline-secondary cancelar"
+							data-bs-dismiss="modal">[[#{accion.cancelar}]]</button>
+						<a th:href="@{/}" type="submit" class="btn btn-outline-danger"
+							id="btnEliminarFinal">[[#{accion.eliminar}]]</a>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 3 ---------------------------------------------------------------------------------------------------------------------------------------------------- -->
+
+	<!-- AGREGAR - MODIFICAR EMPLEADO -->
+	<section th:fragment="agregar-empleado">
+		<div id="modal-agregar" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-white">
+						<h5 class="modal-title">
+							<i th:replace="layout/plantillas :: icon-user-maint"></i>
+							[[#{titulo.modal-empleado}]]
+						</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<form th:action="@{/guardar-empleado}" method="post" th:object="${empleado}" class="was-validated">
+						<input type="hidden" id="id" name="cod_emp" th:field="*{cod_emp}" />
+
+						<div class="modal-body">
+
+							<div class="row mb-3">
+								<label for="dni_emp" class="col-md-4 col-form-label text-start">DNI</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="dni_emp" style="width: 100%; "
+										autofocus="autofocus" name="dni_emp" th:field="*{dni_emp}"
+										required="required" />
+									<!--<span th:if="${#fields.hasErrors('nom_emp')}" th:errors="*{nom_emp}">validacion</span>-->
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<label for="nom_emp"
+									class="col-md-4 col-form-label text-start">[[#{empleado.nombres}]]</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="nom_emp" style="width: 100%; "
+										name="emp_nom" th:field="*{nom_emp}" required="required" />
+									<!--<span th:if="${#fields.hasErrors('apepat_emp')}" th:errors="*{apepat_emp}">validacion</span>-->
+								</div>
+							</div>
+							<div class="row mb-3">
+								<label for="ape_emp" class="col-md-4 col-form-label text-start">APELLIDOS</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="ape_emp" style="width: 100%; "
+										name="emp_ape" th:field="*{ape_emp}" required="required" />
+									<!--<span th:if="${#fields.hasErrors('apemat_emp')}" th:errors="*{apemat_emp}">validacion</span>-->
+								</div>
+							</div>
+							<div class="row mb-3">
+								<label class="col-md-4 col-form-label text-start">[[#{empleado.rol}]]</label>
+								<div class="col-md-5">
+									<select id="cod_rol" class="form-select" name="rol_cod" required="required">
+										<option value="1" label="ROLE_ADMIN"></option>
+										<option value="2" label="ROLE_CLIENTE"></option>
+										<option value="3" label="ROLE_JEFE_ALMACEN"></option>
+										<option value="4" label="ROLE_VIGILANTE"></option>
+									</select>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<label for="nom_usu"
+									class="col-md-4 col-form-label text-start">[[#{empleado.user}]]</label>
+								<div class="col-md-5">
+									<input type="text" class="form-control" id="nom_usu" style="width: 100%; "
+										name="usu_nom" required="required" />
+									<!--<span th:if="${#fields.hasErrors('nom_usu')}" th:errors="*{nom_usu}">validacion</span>-->
+								</div>
+							</div>
+							<div class="row mb-3">
+								<label for="pass_usu"
+									class="col-md-4 col-form-label text-start">[[#{empleado.pass}]]</label>
+								<div class="col-md-5">
+									<input type="password" class="form-control" id="pass_usu" style="width: 100%; "
+										name="usu_pass" required="required" />
+									<!--<span th:if="${#fields.hasErrors('pass_usu')}" th:errors="*{pass_usu}">validacion</span>-->
+								</div>
+							</div>
+							<div class="row mb-3">
+								<input type="hidden" id="id_usu" name="id_usu" th:field="*{usuario}" />
+							</div>
+
+						</div>
+						<div class="modal-footer bg-light">
+							<a href="#" class="btn btn-outline-secondary col-auto"
+								data-bs-dismiss="modal">[[#{accion.cancelar}]]</a> |
+							<input type="submit" th:value="#{accion.guardar}" class="btn btn-primary  col-auto" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- MODAL ELIMINAR EMPLEADO -->
+	<section th:fragment="eliminar-empleado">
+		<div class="modal fade" id="modal-eliminar" data-bs-backdrop="static" data-bs-keyboard="false">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header  bg-light">
+						<h4 class="modal-title text-secondary" id="">[[#{titulo.eliminar-empleado}]]</h4>
+						<button type="button" class="btn-close cancelar" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+
+					<div class="modal-body">
+						<h5 class="text-secondary">[[#{mensaje.eliminar-registro}]]</h5>
+						<p>[[#{mensaje.no-puede-revertir}]]</p>
+					</div>
+
+					<div class="modal-footer bg-light">
+						<button class="btn btn-outline-secondary cancelar"
+							data-bs-dismiss="modal">[[#{accion.cancelar}]]</button>
+						<a th:href="@{/}" type="submit" class="btn btn-outline-danger"
+							id="btnEliminarFinal">[[#{accion.eliminar}]]</a>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+</body>
+
 </html>

@@ -40,14 +40,14 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="cli, num : ${listaClientes}">
+					<tr th:each="cli, num : ${clientes}">
 						<td class="align-middle">[[${cli.idCliente}]]</td>
 						<td class="align-middle">
 							<img th:src="@{'/img/clientes/'}+ ${cli.imagen}" th:alt="${cli.imagen}">
 						</td>
 						<td class="align-middle" th:text="${cli.nomCliente}"></td>
 						<td class="align-middle text-center">
-							<a th:href="@{'inventarios/listarProductos/' + ${cli.idCliente}}">
+							<a th:href="@{'/inventarios/listarProductos/' + ${cli.idCliente}}">
 								<i class="fa-solid fa-file-signature text-warning fs-3"></i>
 							</a>
 						</td>

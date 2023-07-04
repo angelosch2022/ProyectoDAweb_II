@@ -4,6 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.cibertec.proyectoDAWeb_ii.model.Usuario;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -11,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/")
 public class MainController {
 
+	public static Usuario userLogin = new Usuario("lopez", "josef@", 2, "josefino", "123");
+	
 	@GetMapping("")
 	public String Home() {
 		

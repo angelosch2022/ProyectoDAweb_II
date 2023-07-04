@@ -37,7 +37,7 @@ public class VwProducto implements Serializable {
 	@Column(name="id_tipo_bulto")
 	private int idTipoBulto;
 
-	private byte inventariado;
+	private boolean inventariado;
 
 	private String producto;
 

@@ -2,7 +2,9 @@ package com.cibertec.proyectoDAWeb_ii.model;
 
 import java.io.Serializable;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 /**
@@ -12,6 +14,8 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name="usuarios")
+@AllArgsConstructor
+@NoArgsConstructor
 //@NamedQuery(name="Usuario.findAll", query="SELECT u FROM Usuario u")
 public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
