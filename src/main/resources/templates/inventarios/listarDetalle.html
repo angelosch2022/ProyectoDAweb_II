@@ -13,13 +13,13 @@
 	<nav th:replace="layout/plantillas :: nav"></nav>
 
 	<div>
-		<h3 class="my-3">Detalle de Productos:</h3>
-		<h2 class="mb-3"> <strong>Descripción Producto:</strong> [[${descProducto}]]</h2>
+		<h3 class="my-3  text-secondary">Detalle de Productos:</h3>
+		<h2 class="mb-3 "> <strong>Descripción Producto:</strong> [[${descProducto}]]</h2>
 
-		<form method="get" th:action="@{/inventarios/listarProductos/}+${idCliente}" class="row g-3">
+		<form method="get" th:action="@{/inventarios/listarDetalle/}+${idProducto}" class="row g-3">
 			<div class="col-3 d-flex">
-				<label for="filtro" class="col-form-label">Filtrar</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="datetime" name="filtro" class="form-control" id="filtro">
+				<label for="filtro" class="col-form-label col-sm-3">Filtrar</label> 
+				<input type="date" name="filtro" class="form-control" id="filtro">
 			</div>
 			<div class="col-3">
 				<button type="submit" class="btn btn-secondary">
@@ -34,13 +34,13 @@
 			<div th:if="${inventarios != null and !inventarios.empty}" class="table-responsive">
 				<table class="table w-75 table-striped">
 					<thead>
-						<tr class="bg-secondary text-white">
+						<tr class="bg-dark text-white">
 							<th>#</th>
 							<th>Fecha Inv.</th>
 							<th>Inventario</th>
 							<th>Saldo</th>
 							<th>Diferencia</th>
-							<th>Bulto</th>
+							<th>Unidad</th>
 							<th>Realizado Por</th>
 							<th>Editar</th>
 							<th>Eliminar</th>
@@ -49,30 +49,40 @@
 					<tbody>
 						<tr th:each="pro : ${inventarios}">
 							<td class="align-middle">[[${#numbers.formatInteger(pro.idInventario,3)}]]</td>
-							<td class="align-middle">[[${pro.fechaInventario}]]</td>
-							<td class="align-middle">[[${pro.inventario}]]</td>
+							<td class="align-middle">
+								[[${#dates.format(pro.fechaInventario, 'dd-MM-yyyy HH:mm:ss')}]]
+							</td>
+							<td class="align-middle text-end">[[${pro.inventario}]]</td>
 							<td class="align-middle  text-center">[[${pro.saldo}]]</td>
-							<td class="align-middle">[[${pro.saldo - pro.inventario}]]</td>
+							<td class="align-middle text-danger text-end" th:if="${(pro.saldo - pro.inventario) < 0 or (pro.saldo - pro.inventario) > 0}">
+									<strong>
+										[[${pro.saldo - pro.inventario}]]										
+									</strong>							
+							</td>
+							<td class="align-middle text-success text-end" th:if="${(pro.saldo - pro.inventario) == 0}">
+									<strong>
+										[[${pro.saldo - pro.inventario}]]										
+									</strong>							
+							</td>
 							<td class="align-middle">[[${pro.bulto}]]</td>
 							<td class="align-middle"><strong>[[${pro.usuario}]]</strong></td>
 
 							<td class="text-center align-middle">
 								<a class="btn btn-warning px-2" href="" data-bs-toggle="modal"
-									data-bs-target="#modal-editar" id="btnInventario" 
-									th:attr="data-idInvent=${pro.idInventario},							
+									data-bs-target="#modal-editar" th:attr="							
 										data-id=${pro.idProducto},
 										data-desc=${pro.producto},
                                         data-inventario=${pro.inventario},
+                                        data-saldo=${pro.saldo},
                                         data-bulto=${pro.bulto},
-                                        data-fecha=${pro.fechaInventario}" title="Ingresar Inventario">
+                                        data-idinv=${pro.idInventario},
+                                        data-fecha=${pro.fechaInventario}" title="Editar cantidad" id="btnInventario" >
 									<i class="fa-solid fa-file-signature text-dark fs-3"></i>
 								</a>
 							</td>
-							
+
 							<td class="text-center align-middle">
-								<a
-									th:href="@{/inventarios/eliminar/}+${pro.idInventario}"
-									title="Detalle Inventario">
+								<a th:href="@{/inventarios/eliminar/}+${pro.idInventario}" title="Detalle Inventario">
 									<i class="fa-solid fa-square-xmark text-danger fs-1"></i>
 								</a>
 							</td>
@@ -90,7 +100,7 @@
 			</div>
 		</div>
 
-		<a th:href="@{'/inventarios/listarProductos/'+${idProducto}}" class="btn btn-danger  bg-danger  bg-gradient "><i
+		<a th:href="@{'/inventarios/listarProductos/'+${idCliente}}" class="btn btn-danger  bg-danger  bg-gradient mt-4"><i
 				class="fa-solid fa-arrow-left"></i> Ir a Productos</a>
 
 	</div>
@@ -103,23 +113,30 @@
 
 		/*enviar los valores de la fila seleccionada al modal agregar-modificar*/
 		$(document).on("click", "#btnInventario", function () {
-			var idInv = $(this).data('idInvent');
+			
+			var id = $(this).data('idinv');
 			var idPro = $(this).data('id');
 			var desc = $(this).data('desc');
-			var invLabel = 'Cant. Actual: ' + $(this).data('inventario') + ' ' + $(this).data('bulto');
+			var saldo = $(this).data('saldo');
+			var inv = $(this).data('inventario');
+			var invLabel = 'Inventariado: ' + $(this).data('inventario') + ' ' + $(this).data('bulto');
+			var saldoLabel = 'Saldo: ' + $(this).data('saldo') + ' ' + $(this).data('bulto');
 
 
 			console.log("id prod : " + idPro);
-			console.log("id inven : " + idInv);
+			console.log("id inven : " + id);
 			console.log("id desc : " + desc);
 			console.log("id invenLabel : " + invLabel);
-			
+			console.log("saldo: " + saldo);
+
 			//enviando los valores al modal
 			$("#idProducto").val(idPro);
-			$("#idInventario").val(idInv);
+			$("#idInventario").val(id);
 			$("#descProductoLabel").text(desc);
 			$("#invProductoLabel").text(invLabel);
-			$("#cantInventario").val('');
+			$("#saldoProductoLabel").text(saldoLabel);
+			$("#saldoProducto").val(saldo);
+			$("#cantInventario").val(inv);
 
 			$("#idUser").val(1);
 		});

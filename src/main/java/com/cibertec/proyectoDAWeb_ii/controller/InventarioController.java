@@ -1,9 +1,12 @@
 package com.cibertec.proyectoDAWeb_ii.controller;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class InventarioController {
 
 	public int idClientegb;
-	public int idProductogb;
+	//public int idProductogb;
 
 	@Autowired
 	ClienteService clieService;
@@ -98,6 +101,8 @@ public class InventarioController {
 		return "inventarios/listarClientes";
 	}
 
+	
+	
 	// mostrar pagina listado de prodcutos por cliente
 	@GetMapping(value = "/inventarios/listarProductos/{idCliente}")
 	public String listarProductos(
@@ -125,6 +130,8 @@ public class InventarioController {
 		
 		return "inventarios/listarProductos";
 	}
+	
+	
 
 	// guardar inventario
 	@PostMapping(value = "/inventarios/guardarInventario")
@@ -162,18 +169,26 @@ public class InventarioController {
 
 		return "redirect:/inventarios/listarProductos/" + idCliente;
 	}
-
+ 
+	
+	
+	
 	@GetMapping(value = "/inventarios/listarDetalle/{idProducto}")
 	public String listarDetalle(
 			Model model, 
 			@PathVariable(name = "idProducto") Integer idProd,
-			@RequestParam(value = "filtro", required = false) Date filtro) {
+			@RequestParam(name = "filtro",required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate filtro) {
 		
 		List<VwInventario> listado;
 		
 		if(filtro != null)
 		{
-			listado = vwInventarioService.GetAllInventoryByDate(filtro);
+			
+			Date date = Date.from(filtro.atStartOfDay(ZoneId.systemDefault()).toInstant());
+			
+			log.info("FITLRO: "+ date);
+			
+			listado = vwInventarioService.GetAllInventoryByIdAndDate(idProd, date);
 		}else {
 			listado = vwInventarioService.GetAllInventoryByIdProduct(idProd);
 		}
@@ -188,10 +203,69 @@ public class InventarioController {
 		model.addAttribute("descProducto", producto.getDescProducto());
 		model.addAttribute("inventario", new Inventario());
 		model.addAttribute("idProducto", idProd);
-
+		model.addAttribute("idCliente", producto.getCliente().getIdCliente());
+		
+		log.info("ID PRODUCTO PARA DETALLE: "+ idProd);
+		
+		
 		return "/inventarios/listarDetalle";
 	}
 
+	
+	// guardar inventario
+		@PostMapping(value = "/inventarios/guardarInventarioDetalle")
+		public String guardarInventarioDetalle(
+				@ModelAttribute("inventario") Inventario inventario, 
+				Model model) {
+
+			try {
+				
+				inventario.setFechaInventario(new Date());
+				
+				var user = userLogin;
+				inventario.setUsuario(user);
+				
+				
+				var producto = proService.Get(inventario.getProducto().getIdProducto());
+				producto.setFechaUltimoInventario(new Date());
+				producto.setIsInventariado(true);
+				
+				var guardado = invService.Save(inventario, producto);			
+				
+				if (guardado != null) {
+					
+					model.addAttribute("msj",
+							"Se modificó el inventario del producto corectamente" + producto.getDescProducto() + " con "
+									+ guardado.getCantInventario() + " "
+									+ producto.getTipoBulto().getDescBulto());
+				}
+			} catch (Exception e) {
+
+				model.addAttribute("msj", "Error al guardar inventario, intente nuevamente");
+				log.error("ERROR inventario : " + e.getMessage());
+				return "inventarios/listarProductos/" + inventario.getProducto().getIdProducto();
+			}
+
+			return "redirect:/inventarios/listarDetalle/" + inventario.getProducto().getIdProducto();
+		}
+	 
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@GetMapping(value = "/inventarios/detalle/{idDeta}")
 	public String mostrarDetalle(Model model, @RequestParam(name = "idDeta") Integer idDeta) {
 

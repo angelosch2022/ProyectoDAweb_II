@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/")
 public class MainController {
 
-	public static Usuario userLogin = new Usuario("lopez", "josef@", 2, "josefino", "123");
+	public static Usuario userLogin = new Usuario("Rivas", "josef@", 1, "Angelo", "123");
 	
 	@GetMapping("")
 	public String Home() {

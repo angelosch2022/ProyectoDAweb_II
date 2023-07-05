@@ -34,8 +34,8 @@ public class VwInventarioService {
 	}
 	
 	
-	public List<VwInventario> GetAllInventoryByDate(Date fecha){
-		return repository.findByFechaInventario(fecha);
+	public List<VwInventario> GetAllInventoryByIdAndDate(int idProducto, Date fecha){
+		return repository.findByFechaInventario(idProducto, fecha);
 	}
 	
 }

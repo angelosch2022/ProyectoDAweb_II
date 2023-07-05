@@ -18,9 +18,9 @@
 
 		<form method="get" th:action="@{/inventarios/listarProductos/}+${idCliente}" class="row g-3">
 			<div class="col-3 d-flex">
-				<label for="filtro" class="col-form-label">Filtrar</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<label for="filtro" class="col-form-label col-sm-3">Filtrar</label>
 				<input type="text" name="filtro" class="form-control" id="filtro"
-					placeholder="Ingrese el nombre de producto">
+					placeholder="Ingrese el producto">
 			</div>
 			<div class="col-3">
 				<button type="submit" class="btn btn-secondary">
@@ -35,13 +35,13 @@
 			<div th:if="${productos != null and !productos.empty}" class="table-responsive">
 				<table class="table w-75 table-striped">
 					<thead>
-						<tr class="bg-secondary text-white">
+						<tr class="bg-dark text-white">
 							<th>#</th>
 							<th>Almacén</th>
 							<th>SKU</th>
 							<th>Producto</th>
 							<th>Saldo</th>
-							<th>Bulto</th>
+							<th>Unidad</th>
 							<th>¿Realizado?</th>
 							<th>Inventariar</th>
 							<th>Detalle</th>
@@ -99,7 +99,7 @@
 			</div>
 		</div>
 
-		<a th:href="@{/inventarios/listarClientes}" class="btn btn-danger  bg-danger  bg-gradient "><i
+		<a th:href="@{/inventarios/listarClientes}" class="btn btn-danger  bg-danger  bg-gradient  mt-4"><i
 				class="fa-solid fa-arrow-left"></i> Ir a Clientes</a>
 
 	</div>

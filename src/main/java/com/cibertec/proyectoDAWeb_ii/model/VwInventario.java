@@ -20,7 +20,7 @@ public class VwInventario implements Serializable {
 	private String bulto;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="`Fecha Inventario`")
+	@Column(name="Fecha")
 	private Date fechaInventario;
 
 	@Id
