@@ -43,7 +43,7 @@
 					<tr th:each="cli, num : ${clientes}">
 						<td class="align-middle">[[${#numbers.formatInteger(cli.idCliente,3)}]]</td>
 						<td class="align-middle">
-							<img th:src="@{'/img/clientes/'}+ ${cli.imagen}" th:alt="${cli.imagen}">
+							<img th:src="@{'/img/clientes/'}+ ${cli.imagen}" th:alt="${cli.imagen}" class="w-50">
 						</td>
 						<td class="align-middle" th:text="${cli.nomCliente}"></td>
 						<td class="align-middle text-center">

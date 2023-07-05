@@ -21,8 +21,9 @@ public class VwProductoService {
 		return repository.findById(id).orElse(null);
 	}
 	
+	
 	public List<VwProducto> GetAllInventoryByProductOrCustomer(String filtro){
-		return repository.findByProductoOrCliente(filtro, filtro);
+		return repository.findByProductsOrClientes(filtro, filtro);
 	}
 	
 	

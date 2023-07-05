@@ -9,7 +9,8 @@ import com.cibertec.proyectoDAWeb_ii.model.VwProducto;
 
 public interface VwProductoRepository extends JpaRepository<VwProducto, Integer>{
 	
-	List<VwProducto> findByProductoOrCliente(String Producto, String Cliente);
+	@Query(value = "SELECT x.* FROM Vw_Productos x where x.cliente like %:cliente% or x.producto like %:producto%", nativeQuery = true)
+	List<VwProducto> findByProductsOrClientes(String producto, String cliente);
 	
 	/*@Query(value = "SELECT x FROM VwProducto x where x.idCliente=:id", nativeQuery = true)
 	List<VwProducto> findByIdCliente(int id);*/

@@ -86,6 +86,14 @@ public class InventarioController {
 	 * 
 	 * return "inventarios/listarClientes"; }
 	 */
+	
+	
+	
+	/*****
+	 * INVENTARIO PROPDUCTOS POR CLIENTE
+	 * ****/
+	
+	
 	@GetMapping(value = "/inventarios/listarClientes")
 	public String pageInicial(@RequestParam(value = "filtro", required = false) String filtro, Model model) {
 		List<Cliente> clientes;
@@ -138,7 +146,7 @@ public class InventarioController {
 	public String guardarInventario(
 			@ModelAttribute("inventario") Inventario inventario, 
 			Model model, 
-			@RequestParam(name = "idCliente")Integer idCliente) {
+			@RequestParam(name = "idCliente", required = false)String idCliente) {
 
 		try {
 			inventario.setFechaInventario(new Date());
@@ -164,10 +172,19 @@ public class InventarioController {
 
 			model.addAttribute("msj", "Error al guardar inventario, intente nuevamente");
 			log.error("ERROR inventario : " + e.getMessage());
-			return "inventarios/listarProductos/" + idCliente;
+			if(idCliente == null) {
+				return "inventarios/listarProductos";
+			}else {
+				return "inventarios/listarProductos" + idCliente;
+			}
 		}
 
-		return "redirect:/inventarios/listarProductos/" + idCliente;
+		if(idCliente == null) {
+			log.info("id cliente nulo: "+idCliente);
+			return "redirect:/inventarios/listarProductos";
+		}else {
+			return "redirect:/inventarios/listarProductos" + idCliente;
+		}
 	}
  
 	
@@ -252,28 +269,32 @@ public class InventarioController {
 		
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@GetMapping(value = "/inventarios/detalle/{idDeta}")
-	public String mostrarDetalle(Model model, @RequestParam(name = "idDeta") Integer idDeta) {
+		
+		
+		
+		/*****
+		 * INVENTARIO TODOS LO PRODUCTOS
+		 * ****/
+		// mostrar pagina listado de prodcutos por cliente
+		@GetMapping(value = "/inventarios/listarProductos")
+		public String listarProductosTodosClientes( 
+				Model model,
+				@RequestParam(value = "filtro", required = false) String filtro) {
 
-		var detalle = invService.Get(idDeta);
+			List<VwProducto> productos;
 
-		model.addAttribute("detalle", detalle);
-
-		return "/inventarios/detalle";
-	}
+			if (filtro != null && !filtro.isEmpty()) {
+				productos = vwProductoService.GetAllInventoryByProductOrCustomer(filtro);
+			} else {
+				productos = vwProductoService.GetAll();
+			}
+			
+			model.addAttribute("inventario", new Inventario());
+			model.addAttribute("idUserLogin", userLogin.getIdUsuario());
+			model.addAttribute("fecha", new Date());
+			model.addAttribute("productos", productos);
+			
+			return "inventarios/listarProductos";
+		}
 
 }

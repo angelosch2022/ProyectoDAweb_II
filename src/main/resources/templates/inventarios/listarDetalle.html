@@ -18,7 +18,7 @@
 
 		<form method="get" th:action="@{/inventarios/listarDetalle/}+${idProducto}" class="row g-3">
 			<div class="col-3 d-flex">
-				<label for="filtro" class="col-form-label col-sm-3">Filtrar</label> 
+				<label for="filtro" class="col-form-label col-sm-3">Filtrar</label>
 				<input type="date" name="filtro" class="form-control" id="filtro">
 			</div>
 			<div class="col-3">
@@ -54,15 +54,16 @@
 							</td>
 							<td class="align-middle text-end">[[${pro.inventario}]]</td>
 							<td class="align-middle  text-center">[[${pro.saldo}]]</td>
-							<td class="align-middle text-danger text-end" th:if="${(pro.saldo - pro.inventario) < 0 or (pro.saldo - pro.inventario) > 0}">
-									<strong>
-										[[${pro.saldo - pro.inventario}]]										
-									</strong>							
+							<td class="align-middle text-danger text-end"
+								th:if="${(pro.saldo - pro.inventario) < 0 or (pro.saldo - pro.inventario) > 0}">
+								<strong>
+									[[${pro.saldo - pro.inventario}]]
+								</strong>
 							</td>
 							<td class="align-middle text-success text-end" th:if="${(pro.saldo - pro.inventario) == 0}">
-									<strong>
-										[[${pro.saldo - pro.inventario}]]										
-									</strong>							
+								<strong>
+									[[${pro.saldo - pro.inventario}]]
+								</strong>
 							</td>
 							<td class="align-middle">[[${pro.bulto}]]</td>
 							<td class="align-middle"><strong>[[${pro.usuario}]]</strong></td>
@@ -76,7 +77,7 @@
                                         data-saldo=${pro.saldo},
                                         data-bulto=${pro.bulto},
                                         data-idinv=${pro.idInventario},
-                                        data-fecha=${pro.fechaInventario}" title="Editar cantidad" id="btnInventario" >
+                                        data-fecha=${pro.fechaInventario}" title="Editar cantidad" id="btnInventario">
 									<i class="fa-solid fa-file-signature text-dark fs-3"></i>
 								</a>
 							</td>
@@ -100,8 +101,12 @@
 			</div>
 		</div>
 
-		<a th:href="@{'/inventarios/listarProductos/'+${idCliente}}" class="btn btn-danger  bg-danger  bg-gradient mt-4"><i
-				class="fa-solid fa-arrow-left"></i> Ir a Productos</a>
+		<a  th:if="${idCliente != null}" th:href="@{'/inventarios/listarProductos/'+${idCliente}}"
+			class="btn btn-danger  bg-danger  bg-gradient mt-4"><i class="fa-solid fa-arrow-left"></i> Ir a Productos
+		</a>
+		<a th:if="${idCliente == null}" th:href="@{'/inventarios/listarProductos}"
+			class="btn btn-danger  bg-danger  bg-gradient mt-4"><i class="fa-solid fa-arrow-left"></i> Ir a Productos
+		</a>
 
 	</div>
 
@@ -113,7 +118,7 @@
 
 		/*enviar los valores de la fila seleccionada al modal agregar-modificar*/
 		$(document).on("click", "#btnInventario", function () {
-			
+
 			var id = $(this).data('idinv');
 			var idPro = $(this).data('id');
 			var desc = $(this).data('desc');
@@ -121,13 +126,6 @@
 			var inv = $(this).data('inventario');
 			var invLabel = 'Inventariado: ' + $(this).data('inventario') + ' ' + $(this).data('bulto');
 			var saldoLabel = 'Saldo: ' + $(this).data('saldo') + ' ' + $(this).data('bulto');
-
-
-			console.log("id prod : " + idPro);
-			console.log("id inven : " + id);
-			console.log("id desc : " + desc);
-			console.log("id invenLabel : " + invLabel);
-			console.log("saldo: " + saldo);
 
 			//enviando los valores al modal
 			$("#idProducto").val(idPro);

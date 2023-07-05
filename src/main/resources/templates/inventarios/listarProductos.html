@@ -14,13 +14,12 @@
 
 	<div>
 		<h3 class="my-3">Inventariar Productos:</h3>
-		<h2 class="mb-3" > <strong>Cliente:</strong> [[${nomCliente}]]</h2>
+		<h2 class="mb-3"> <strong>Cliente:</strong> [[${nomCliente}]]</h2>
 
 		<form method="get" th:action="@{/inventarios/listarProductos/}+${idCliente}" class="row g-3">
 			<div class="col-3 d-flex">
 				<label for="filtro" class="col-form-label col-sm-3">Filtrar</label>
-				<input type="text" name="filtro" class="form-control" id="filtro"
-					placeholder="Ingrese el producto">
+				<input type="text" name="filtro" class="form-control" id="filtro" placeholder="Ingrese el producto">
 			</div>
 			<div class="col-3">
 				<button type="submit" class="btn btn-secondary">
@@ -37,6 +36,7 @@
 					<thead>
 						<tr class="bg-dark text-white">
 							<th>#</th>
+							<th th:if="${idCliente == null}"></th>
 							<th>Almacén</th>
 							<th>SKU</th>
 							<th>Producto</th>
@@ -50,24 +50,22 @@
 					<tbody>
 						<tr th:each="pro : ${productos}">
 							<td class="align-middle">[[${#numbers.formatInteger(pro.idProducto,3)}]]</td>
+							<td th:if="${idCliente == null}">[[${pro.cliente}]]</td>
 							<td class="align-middle  text-center">[[${pro.almacen}]]</td>
 							<td class="align-middle">[[${pro.sku}]]</td>
 							<td class="align-middle">[[${pro.producto}]]</td>
 							<td class="align-middle text-end"><strong>[[${pro.saldo}]]</strong></td>
 							<td class="align-middle">[[${pro.bulto}]]</td>
-							<td class="align-middle text-success text-center"
-								th:if="${pro.inventariado}">
+							<td class="align-middle text-success text-center" th:if="${pro.inventariado}">
 								<i class="fa-solid fa-square-check  fs-2"></i>
 							</td>
-							<td class="align-middle  text-danger  text-center"
-								th:if="${!pro.inventariado}">
+							<td class="align-middle  text-danger  text-center" th:if="${!pro.inventariado}">
 								<i class="fa-solid fa-square-xmark  fs-2"></i>
 							</td>
 
 							<td class="text-center align-middle">
 								<a class="btn btn-warning   px-2" href="" data-bs-toggle="modal"
-									data-bs-target="#modal-agregar" id="btnInventario" 
-									th:attr="
+									data-bs-target="#modal-agregar" id="btnInventario" th:attr="
 										data-id=${pro.idProducto},
 										data-desc=${pro.producto},
                                         data-saldo=${pro.saldo},
@@ -81,7 +79,7 @@
 							<td class="text-center align-middle">
 								<a class="btn btn-secondary   px-2"
 									th:href="@{/inventarios/listarDetalle/}+${pro.idProducto}"
-									title="Detalle Inventario" >
+									title="Detalle Inventario">
 									<i class="fa-solid fa-magnifying-glass-arrow-right  text-white fs-3"></i>
 								</a>
 							</td>
@@ -99,8 +97,12 @@
 			</div>
 		</div>
 
-		<a th:href="@{/inventarios/listarClientes}" class="btn btn-danger  bg-danger  bg-gradient  mt-4"><i
-				class="fa-solid fa-arrow-left"></i> Ir a Clientes</a>
+		<a th:if="${idCliente != null}" th:href="@{/inventarios/listarClientes}" class="btn btn-danger  bg-danger  bg-gradient  mt-4"><i
+				class="fa-solid fa-arrow-left"></i> Ir a Clientes
+		</a>
+		<a th:if="${idCliente == null}" th:href="@{/}" class="btn btn-danger  bg-danger  bg-gradient  mt-4"><i
+				class="fa-solid fa-arrow-left"></i> Ir al Menú
+		</a>
 
 	</div>
 
