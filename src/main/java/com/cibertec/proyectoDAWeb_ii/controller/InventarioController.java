@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cibertec.proyectoDAWeb_ii.model.Cliente;
 import com.cibertec.proyectoDAWeb_ii.model.Inventario;
+import com.cibertec.proyectoDAWeb_ii.model.VwInventario;
+import com.cibertec.proyectoDAWeb_ii.model.VwProducto;
 import com.cibertec.proyectoDAWeb_ii.service.ClienteService;
 import com.cibertec.proyectoDAWeb_ii.service.InventarioService;
+import com.cibertec.proyectoDAWeb_ii.service.ProductoService;
 import com.cibertec.proyectoDAWeb_ii.service.VwInventarioService;
 import com.cibertec.proyectoDAWeb_ii.service.VwProductoService;
 import static com.cibertec.proyectoDAWeb_ii.controller.MainController.userLogin;
@@ -40,6 +43,9 @@ public class InventarioController {
 
 	@Autowired
 	VwInventarioService vwInventarioService;
+	
+	@Autowired
+	ProductoService proService;
 
 	// Mostrar página de listado clientes
 	/*
@@ -78,17 +84,13 @@ public class InventarioController {
 	 * return "inventarios/listarClientes"; }
 	 */
 	@GetMapping(value = "/inventarios/listarClientes")
-	public String pageInicial(@RequestParam(value = "filtro", required = false) String nombre, Model model) {
+	public String pageInicial(@RequestParam(value = "filtro", required = false) String filtro, Model model) {
 		List<Cliente> clientes;
 
-		if (nombre != null && !nombre.isEmpty()) {
-			clientes = clieService.GetAllByName(nombre);
+		if (filtro != null && !filtro.isEmpty()) {
+			clientes = clieService.GetAllByName(filtro);
 		} else {
 			clientes = clieService.GetAll();
-		}
-
-		for (var c : clientes) {
-			log.info(c.getNomCliente());
 		}
 
 		model.addAttribute("clientes", clientes);
@@ -98,63 +100,96 @@ public class InventarioController {
 
 	// mostrar pagina listado de prodcutos por cliente
 	@GetMapping(value = "/inventarios/listarProductos/{idCliente}")
-	public String listarProductos(@PathVariable(name = "idCliente") Integer id, Model model) {
+	public String listarProductos(
+			@PathVariable(name = "idCliente") Integer id, 
+			Model model,
+			@RequestParam(value = "filtro", required = false) String filtro) {
 
-		idClientegb = id;
+		List<VwProducto> productos;
 
-		var productos = vwProductoService.GetProductsByIdCustomer(id);
-
-		for (var p : productos) {
-			log.info(p.getProducto() + "prodcuto");
-			log.info(userLogin.getIdUsuario()+" id");
+		if (filtro != null && !filtro.isEmpty()) {
+			productos = vwProductoService.GetProductsByIdCustomerAndDescProduct(id, filtro);
+		} else {
+			productos = vwProductoService.GetProductsByIdCustomer(id);
 		}
 		
+			
+		var cliente = clieService.Get(id);
+
 		model.addAttribute("inventario", new Inventario());
 		model.addAttribute("idUserLogin", userLogin.getIdUsuario());
 		model.addAttribute("fecha", new Date());
 		model.addAttribute("productos", productos);
+		model.addAttribute("idCliente", id);
+		model.addAttribute("nomCliente", cliente.getNomCliente());
+		
 		return "inventarios/listarProductos";
 	}
 
 	// guardar inventario
 	@PostMapping(value = "/inventarios/guardarInventario")
-	public String guardarInventario(@ModelAttribute("inventario") Inventario inventario, Model model) {
-		
+	public String guardarInventario(
+			@ModelAttribute("inventario") Inventario inventario, 
+			Model model, 
+			@RequestParam(name = "idCliente")Integer idCliente) {
+
 		try {
-			log.info("ingreso a guardar inventario");
 			inventario.setFechaInventario(new Date());
 			
 			var user = userLogin;
 			inventario.setUsuario(user);
 			
-			log.info("imprimir usuario : "+ user.getNomUsuario()+" id "+ user.getIdUsuario());
 			
-			var guardado = invService.Save(inventario);
-
+			var producto = proService.Get(inventario.getProducto().getIdProducto());
+			producto.setFechaUltimoInventario(new Date());
+			producto.setIsInventariado(true);
+			
+			var guardado = invService.Save(inventario, producto);			
+			
 			if (guardado != null) {
+				
 				model.addAttribute("msj",
-						"Se registro el inventario del producto " + inventario.getProducto().getDescProducto() + " con "
-								+ inventario.getCantInventario() + " "
-								+ inventario.getProducto().getTipoBulto().getDescBulto());
+						"Se registro el inventario del producto " + producto.getDescProducto() + " con "
+								+ guardado.getCantInventario() + " "
+								+ producto.getTipoBulto().getDescBulto());
 			}
 		} catch (Exception e) {
 
 			model.addAttribute("msj", "Error al guardar inventario, intente nuevamente");
 			log.error("ERROR inventario : " + e.getMessage());
-			return "inventarios/listarProductos/{" + idClientegb + "}";
+			return "inventarios/listarProductos/" + idCliente;
 		}
 
-		return "redirect:/inventarios/listarProductos/{" + idProductogb + "}";
+		return "redirect:/inventarios/listarProductos/" + idCliente;
 	}
 
-	@GetMapping(value = "/inventarios/listarDetalle/{idProd}")
-	public String listarDetalle(Model model, @RequestParam(name = "idProd") Integer idProd) {
-		idProductogb = idProd;
-		var listado = vwInventarioService.GetAllInventoryByIdProduct(idProd);
+	@GetMapping(value = "/inventarios/listarDetalle/{idProducto}")
+	public String listarDetalle(
+			Model model, 
+			@PathVariable(name = "idProducto") Integer idProd,
+			@RequestParam(value = "filtro", required = false) Date filtro) {
+		
+		List<VwInventario> listado;
+		
+		if(filtro != null)
+		{
+			listado = vwInventarioService.GetAllInventoryByDate(filtro);
+		}else {
+			listado = vwInventarioService.GetAllInventoryByIdProduct(idProd);
+		}
+		
+		var producto = proService.Get(idProd);
+		
+		for(var i : listado) {
+			log.info("los i son: "+ i.getIdInventario() +" - "+ i.getIdProducto());
+		}
+		
+		model.addAttribute("inventarios", listado);
+		model.addAttribute("descProducto", producto.getDescProducto());
+		model.addAttribute("inventario", new Inventario());
+		model.addAttribute("idProducto", idProd);
 
-		model.addAttribute("listado", listado);
-
-		return "/inventarios/detalle";
+		return "/inventarios/listarDetalle";
 	}
 
 	@GetMapping(value = "/inventarios/detalle/{idDeta}")

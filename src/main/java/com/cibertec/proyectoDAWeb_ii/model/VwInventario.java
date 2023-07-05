@@ -21,7 +21,7 @@ public class VwInventario implements Serializable {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="`Fecha Inventario`")
-	private Date fecha_Inventario;
+	private Date fechaInventario;
 
 	@Id
 	@Column(name="id_inventario")

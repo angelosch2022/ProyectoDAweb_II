@@ -1,0 +1,181 @@
+/*CSS PROPIO
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+PARA FONDO DE BOTONES
+.imgCrud {
+    transition: 0.2s;
+}
+.imgCrud:hover {
+    transform: scale(1.3);
+}
+
+INICIO BANNER
+  .responsive-banner {
+      width: 100%;
+      min-width: 500px;
+     
+      position: sticky;
+     top: 0px;
+      height: 250px;
+      min-height: 250px;
+      max-height: 500px;
+      overflow: hidden;
+      z-index: 200;
+      box-shadow: 0 10px 30px -8px #777;
+  }
+  .responsive-banner img {
+      width: 100%;
+      height: 250px;
+      z-index: 100;
+  }
+
+
+  @media only screen and (max-width: 768px){
+      .responsive-banner {
+          display: none;
+          height: 0;
+          border: solid 1pt;
+          min-height: 0px;
+      }
+  }
+
+FIN BANNER
+
+INICIO MENU
+.barraMenu {
+    display: flex;
+    flex-wrap: nowrap;
+         position: sticky; 
+         top: 250px; 
+     	width: 100%; 
+    width: 100%;
+    background-color: #0068AB;
+    color: white;
+         z-index: 200; 
+    padding: 10px;
+    margin:	0 auto;
+}
+
+.barraMenu a{
+    color: white;
+}
+
+.barraMenu li > a:hover {
+    color: #337ab7
+}
+
+.titleMenu {
+
+}
+.btnMenu{
+
+}
+.btnMenu li a {
+    font-size: 13pt;
+}
+.navbar-inverse .navbar-nav > li > a {
+    color: white;
+}
+.navbar-inverse .navbar-brand {
+    color: white;
+}
+submenu
+.navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
+    color: #0068AB;
+    font-size: 12pt;
+}
+.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
+    color: #0068AB;
+    background-color: white;
+     border-radius: 5px;
+}
+.navbar-nav > li > .dropdown-menu {
+    border-radius: 0;
+}
+
+@media only screen and (max-width: 768px){
+    .navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
+        color: white
+    }
+    .navbar-inverse .navbar-nav .open .dropdown-menu > li:hover{
+        background-color: #808080;
+        border-radius: 5px;
+    }
+    .barraMenu {
+        top: 0;
+    }
+    .form-control{
+        width: 150px
+    }
+    .form-inline .btn{
+        margin-top: 5px;
+    }
+}
+
+@media (orientation: landscape) {
+    .responsive-banner {
+        display: none;
+        height: 0;
+        border: solid 1pt;
+        min-height: 0px;
+    }
+
+    .navbar-nav > li > a{
+        font-size: 12pt;
+    }
+
+    .navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
+        font-size: 11pt;
+    }
+
+    .navbar-inverse .navbar-nav .open .dropdown-menu > li:hover {
+        background-color: #808080;
+    }
+
+
+    .form-control {
+        width: 150px
+    }
+
+}
+
+.ahover {
+    transition: transform 0.5s;
+}
+
+.ahover:hover {
+    transform: scale(1.1);
+}
+
+FIN MENU
+INICIO CONTENIDO
+
+FIN CONTENIDO
+INICIO FOOTER
+.footer {
+    padding: 1em 0;
+    text-align: center;
+    margin-top: auto;
+}
+FIN FOOTER
+INICIO FRM LOGGIN
+.frmLogin{
+    margin: 0 auto;
+    width: 30%;
+}
+FIN FRM LOGGIN
+
+INICIO FRM MANTENIMIENTO CLIENTE
+#frmRegistrar>.table>tbody>tr>td {
+    border-top: 0;
+}
+#frmActualizar>.table>tbody>tr>td {
+    border-top: 0;
+}
+
+FIN FRM MANTENIMIENTO CLIENTE**/

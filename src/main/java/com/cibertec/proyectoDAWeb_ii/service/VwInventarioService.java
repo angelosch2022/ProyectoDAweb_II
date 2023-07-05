@@ -1,5 +1,6 @@
 package com.cibertec.proyectoDAWeb_ii.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,15 @@ public class VwInventarioService {
 	}
 	
 	
+	
+	
 	public List<VwInventario> GetAllInventoryByIdProduct(int id){
 		return repository.findByIdProducto(id);
+	}
+	
+	
+	public List<VwInventario> GetAllInventoryByDate(Date fecha){
+		return repository.findByFechaInventario(fecha);
 	}
 	
 }

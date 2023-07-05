@@ -13,10 +13,10 @@
 	<nav th:replace="layout/plantillas :: nav"></nav>
 
 	<div>
-		<h1 class="my-3">Productos:</h1>
-		<h2 class="mb-3">Seleccione un producto para inventariar</h2>
+		<h3 class="my-3">Inventariar Productos:</h3>
+		<h2 class="mb-3" > <strong>Cliente:</strong> [[${nomCliente}]]</h2>
 
-		<form method="get" th:action="@{/inventarios/listarClientes}" class="row g-3">
+		<form method="get" th:action="@{/inventarios/listarProductos/}+${idCliente}" class="row g-3">
 			<div class="col-3 d-flex">
 				<label for="filtro" class="col-form-label">Filtrar</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="text" name="filtro" class="form-control" id="filtro"
@@ -32,53 +32,76 @@
 		<section th:replace="layout/modales :: agregar-inventario"></section>
 
 		<div class="mt-4">
-			<table class="table">
-				<thead>
-					<tr class="bg-secondary text-white">
-						<th>#</th>
-						<th>Cliente</th>
-						<th>Almacén</th>
-						<th>SKU</th>
-						<th>Producto</th>
-						<th>Saldo</th>
-						<th>Bulto</th>
-						<th>¿Invent.?</th>
-						<th>Seleccione</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="pro : ${productos}">
-						<td class="align-middle">[[${pro.idProducto}]]</td>
-						<td class="align-middle">[[${pro.cliente}]]</td>
-						<td class="align-middle">[[${pro.almacen}]]</td>
-						<td class="align-middle">[[${pro.sku}]]</td>
-						<td class="align-middle">[[${pro.producto}]]</td>
-						<td class="align-middle">[[${pro.saldo}]]</td>
-						<td class="align-middle">[[${pro.bulto}]]</td>
-						<td class="align-middle" th:if="${pro.inventariado}">SI</td>
-						<td class="align-middle" th:if="${!pro.inventariado}">NO</td>
+			<div th:if="${productos != null and !productos.empty}" class="table-responsive">
+				<table class="table w-75 table-striped">
+					<thead>
+						<tr class="bg-secondary text-white">
+							<th>#</th>
+							<th>Almacén</th>
+							<th>SKU</th>
+							<th>Producto</th>
+							<th>Saldo</th>
+							<th>Bulto</th>
+							<th>¿Realizado?</th>
+							<th>Inventariar</th>
+							<th>Detalle</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="pro : ${productos}">
+							<td class="align-middle">[[${#numbers.formatInteger(pro.idProducto,3)}]]</td>
+							<td class="align-middle  text-center">[[${pro.almacen}]]</td>
+							<td class="align-middle">[[${pro.sku}]]</td>
+							<td class="align-middle">[[${pro.producto}]]</td>
+							<td class="align-middle text-end"><strong>[[${pro.saldo}]]</strong></td>
+							<td class="align-middle">[[${pro.bulto}]]</td>
+							<td class="align-middle text-success text-center"
+								th:if="${pro.inventariado}">
+								<i class="fa-solid fa-square-check  fs-2"></i>
+							</td>
+							<td class="align-middle  text-danger  text-center"
+								th:if="${!pro.inventariado}">
+								<i class="fa-solid fa-square-xmark  fs-2"></i>
+							</td>
 
-						<td class="align-middle">
-							<!--							<a th:href="@{'inventarios/listarProductos/' + ${cli.idCliente}}">-->
-							<!--								<i class="fa-solid fa-file-signature text-warning fs-3"></i>-->
-							<!--							</a>-->
-
-							<a class="btn btn-warning" href="" data-bs-toggle="modal" data-bs-target="#modal-agregar"
-								id="btnInventario" th:attr="data-id=${pro.idProducto},
+							<td class="text-center align-middle">
+								<a class="btn btn-warning   px-2" href="" data-bs-toggle="modal"
+									data-bs-target="#modal-agregar" id="btnInventario" 
+									th:attr="
+										data-id=${pro.idProducto},
 										data-desc=${pro.producto},
                                         data-saldo=${pro.saldo},
                                         data-bulto=${pro.bulto},
                                         data-idUserLogin=${idUserLogin},
-                                        data-fecha=${fecha}">
-								<i class="fa-solid fa-file-signature text-dark fs-3"></i>
-							</a>
+                                        data-fecha=${fecha},
+                                        data-idCli=${idCliente}" title="Ingresar Inventario">
+									<i class="fa-solid fa-file-signature text-dark fs-3"></i>
+								</a>
+							</td>
+							<td class="text-center align-middle">
+								<a class="btn btn-secondary   px-2"
+									th:href="@{/inventarios/listarDetalle/}+${pro.idProducto}"
+									title="Detalle Inventario" >
+									<i class="fa-solid fa-magnifying-glass-arrow-right  text-white fs-3"></i>
+								</a>
+							</td>
+						</tr>
 
-						</td>
-					</tr>
+					</tbody>
+				</table>
+			</div>
 
-				</tbody>
-			</table>
+			<!-- AVISO DE INFORMACIÓN NO ENCONTRADA -->
+			<div th:if="${productos == null or productos.empty}" class="col-auto mt-4">
+				<div class="alert alert-warning alert-dismissible fade show" role="alert">
+					<strong>AVISO! </strong>No se encontraron registros
+				</div>
+			</div>
 		</div>
+
+		<a th:href="@{/inventarios/listarClientes}" class="btn btn-danger  bg-danger  bg-gradient "><i
+				class="fa-solid fa-arrow-left"></i> Ir a Clientes</a>
+
 	</div>
 
 
@@ -93,20 +116,25 @@
 			var desc = $(this).data('desc');
 			var sal = $(this).data('saldo');
 			var salLabel = $(this).data('saldo') + ' ' + $(this).data('bulto');
-			
-			//var idUserLogin = $(this).data('idUserLogin');
-			var fecha = $(this).data('fecha');
-			
-			
+			var idCli = $(this).data('idCli');
+			//var fecha = $(this).data('fecha');
+
+			console.log("id prod : " + id);
+			console.log("sal : " + sal);
+			console.log("id desc : " + desc);
+			console.log("id cli : " + idCli);
+
 			//enviando los valores al modal
 			$("#idProducto").val(id);
 			$("#saldoProducto").val(sal);
 			$("#descProductoLabel").text(desc);
 			$("#saldoProductoLabel").text(salLabel);
 			$("#cantInventario").val('');
-			
+
 			$("#idUser").val(1);
-			$("#fecha").val(fecha);
+			//$("#idCliente").val(idCli);
+
+			//$("#fecha").val('2023-01-01 00:00:00');
 		});
 
 
@@ -120,7 +148,7 @@
 	</script>
 
 	<script>
-		document.title = 'Inventario';
+		document.title = 'Inventario | Productos';
 	</script>
 </body>
 

@@ -4,14 +4,20 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cibertec.proyectoDAWeb_ii.model.Inventario;
+import com.cibertec.proyectoDAWeb_ii.model.Producto;
 import com.cibertec.proyectoDAWeb_ii.repository.InventarioRepository;
+import com.cibertec.proyectoDAWeb_ii.repository.ProductoRepository;
 
 @Service
 public class InventarioService {
 	@Autowired
 	private InventarioRepository repository;
+	
+	@Autowired
+	private ProductoRepository prodRepository;
 	
 	public List<Inventario> GetAll(){
 		return (List<Inventario>)repository.findAll();
@@ -21,8 +27,13 @@ public class InventarioService {
 		return repository.findById(id).orElse(null);
 	}
 	
-	public Inventario Save(Inventario obj) {
-		return repository.save(obj);
+	@Transactional()
+	public Inventario Save(Inventario inv, Producto prod) {
+				
+		prodRepository.save(prod);
+		var inventario = repository.save(inv);
+		
+		return inventario;
 	}
 	
 	public void Delete(int id) {

@@ -29,8 +29,8 @@
 			</div>
 		</form>
 
-		<div class="mt-4 w-75" th:if="${clientes != null and !clientes.empty}">
-			<table class="table">
+		<div class="table-responsive" th:if="${clientes != null and !clientes.empty}">
+			<table class="table  table-striped mt-4 w-75 ">
 				<thead>
 					<tr class="bg-secondary text-white">
 						<th>#</th>
@@ -41,14 +41,15 @@
 				</thead>
 				<tbody>
 					<tr th:each="cli, num : ${clientes}">
-						<td class="align-middle">[[${cli.idCliente}]]</td>
+						<td class="align-middle">[[${#numbers.formatInteger(cli.idCliente,3)}]]</td>
 						<td class="align-middle">
 							<img th:src="@{'/img/clientes/'}+ ${cli.imagen}" th:alt="${cli.imagen}">
 						</td>
 						<td class="align-middle" th:text="${cli.nomCliente}"></td>
 						<td class="align-middle text-center">
-							<a th:href="@{'/inventarios/listarProductos/' + ${cli.idCliente}}">
-								<i class="fa-solid fa-file-signature text-warning fs-3"></i>
+							<a th:href="@{'/inventarios/listarProductos/' + ${cli.idCliente}}"
+								class="btn btn-secondary px-2">
+								<i class="fa-solid fa-file-signature text-white fs-4"></i>
 							</a>
 						</td>
 					</tr>
@@ -83,7 +84,7 @@
 	<footer th:replace="layout/plantillas :: footer"></footer>
 
 	<script>
-		document.title = 'Inventario';
+		document.title = 'Inventario | Clientes';
 	</script>
 </body>
 

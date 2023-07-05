@@ -27,7 +27,15 @@ public class VwProductoService {
 	
 	
 	
+	public List<VwProducto> GetProductsByIdCustomerAndDescProduct(int id, String producto){
+		return repository.findByIdClienteAndProducto(id, producto);
+	}
+	
 	public List<VwProducto> GetProductsByIdCustomer(int id){
 		return repository.findByIdCliente(id);
+	}
+	
+	public List<VwProducto> GetProductsByDescription(String producto){
+		return repository.findByProducto(producto);
 	}
 }

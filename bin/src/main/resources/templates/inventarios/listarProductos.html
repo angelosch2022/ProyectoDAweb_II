@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring.security">
+
+<head th:replace="layout/plantillas :: head">
+	<title>Inventario | Clientes</title>
+
+</head>
+
+<body class="container ">
+
+	<!--        <header th:replace="layout/plantillas :: header"></header>-->
+	<nav th:replace="layout/plantillas :: nav"></nav>
+
+	<div>
+		<h1 class="my-3">Productos:</h1>
+		<h2 class="mb-3">Seleccione un producto para inventariar</h2>
+
+		<form method="get" th:action="@{/inventarios/listarClientes}" class="row g-3">
+			<div class="col-3 d-flex">
+				<label for="filtro" class="col-form-label">Filtrar</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" name="filtro" class="form-control" id="filtro"
+					placeholder="Ingrese el nombre de producto">
+			</div>
+			<div class="col-3">
+				<button type="submit" class="btn btn-secondary">
+					<i class="fa-solid fa-magnifying-glass text-white" style="font-size: 16pt"></i>
+				</button>
+			</div>
+		</form>
+
+		<section th:replace="layout/modales :: agregar-inventario"></section>
+
+		<div class="mt-4">
+			<table class="table">
+				<thead>
+					<tr class="bg-secondary text-white">
+						<th>#</th>
+						<th>Cliente</th>
+						<th>Almacén</th>
+						<th>SKU</th>
+						<th>Producto</th>
+						<th>Saldo</th>
+						<th>Bulto</th>
+						<th>¿Invent.?</th>
+						<th>Seleccione</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="pro : ${productos}">
+						<td class="align-middle">[[${pro.idProducto}]]</td>
+						<td class="align-middle">[[${pro.cliente}]]</td>
+						<td class="align-middle">[[${pro.almacen}]]</td>
+						<td class="align-middle">[[${pro.sku}]]</td>
+						<td class="align-middle">[[${pro.producto}]]</td>
+						<td class="align-middle">[[${pro.saldo}]]</td>
+						<td class="align-middle">[[${pro.bulto}]]</td>
+						<td class="align-middle" th:if="${pro.inventariado}">SI</td>
+						<td class="align-middle" th:if="${!pro.inventariado}">NO</td>
+
+						<td class="align-middle">
+							<!--							<a th:href="@{'inventarios/listarProductos/' + ${cli.idCliente}}">-->
+							<!--								<i class="fa-solid fa-file-signature text-warning fs-3"></i>-->
+							<!--							</a>-->
+
+							<a class="btn btn-warning" href="" data-bs-toggle="modal" data-bs-target="#modal-agregar"
+								id="btnInventario" th:attr="data-id=${pro.idProducto},
+										data-desc=${pro.producto},
+                                        data-saldo=${pro.saldo},
+                                        data-bulto=${pro.bulto},
+                                        data-idUserLogin=${idUserLogin},
+                                        data-fecha=${fecha}">
+								<i class="fa-solid fa-file-signature text-dark fs-3"></i>
+							</a>
+
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+
+	<footer th:replace="layout/plantillas :: footer"></footer>
+
+
+	<script type="text/javascript">
+
+		/*enviar los valores de la fila seleccionada al modal agregar-modificar*/
+		$(document).on("click", "#btnInventario", function () {
+			var id = $(this).data('id');
+			var desc = $(this).data('desc');
+			var sal = $(this).data('saldo');
+			var salLabel = $(this).data('saldo') + ' ' + $(this).data('bulto');
+			
+			//var idUserLogin = $(this).data('idUserLogin');
+			var fecha = $(this).data('fecha');
+			
+			
+			//enviando los valores al modal
+			$("#idProducto").val(id);
+			$("#saldoProducto").val(sal);
+			$("#descProductoLabel").text(desc);
+			$("#saldoProductoLabel").text(salLabel);
+			$("#cantInventario").val('');
+			
+			$("#idUser").val(1);
+			$("#fecha").val(fecha);
+		});
+
+
+		/*enviar el foco al primer control*/
+		$(function () {
+			$('#modal-agregar').on('shown.bs.modal', function () {
+				$('#cantInventario').trigger('focus');
+				//console.log('ingresó focus');
+			});
+		});
+	</script>
+
+	<script>
+		document.title = 'Inventario';
+	</script>
+</body>
+
+</html>
