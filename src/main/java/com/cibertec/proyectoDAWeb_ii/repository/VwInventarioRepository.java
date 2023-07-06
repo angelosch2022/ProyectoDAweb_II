@@ -11,7 +11,8 @@ import java.util.Date;
 
 public interface VwInventarioRepository extends JpaRepository<VwInventario, Integer>{
 	
-	List<VwInventario> findByProductoOrCliente(String producto, String Cliente);
+	@Query(value = "SELECT x.* FROM Vw_Inventarios x where x.producto like %:producto% or x.cliente like %:cliente%", nativeQuery = true)
+	List<VwInventario> findByProductoOrCliente(String producto, String cliente);
 	
 	List<VwInventario> findByIdProducto(int idProducto);
 	

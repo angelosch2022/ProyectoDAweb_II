@@ -13,15 +13,26 @@
 	<nav th:replace="layout/plantillas :: nav"></nav>
 
 	<div>
-		<h3 class="my-3">Inventariar Productos:</h3>
-		<h2 class="mb-3"> <strong>Cliente:</strong> [[${nomCliente}]]</h2>
+		<h3 class="my-3 text-secondary">Inventariar Productos</h3>
+		<h2 class="mb-3" th:if="${nomCliente!= null}"> <strong>Cliente:</strong> [[${nomCliente}]]</h2>
 
-		<form method="get" th:action="@{/inventarios/listarProductos/}+${idCliente}" class="row g-3">
-			<div class="col-3 d-flex">
+		<form  th:if="${idCliente != null}" method="get" th:action="@{/inventarios/listarProductos/}+${idCliente}" class="row g-3">
+			<div class="col-md-3 d-flex">
 				<label for="filtro" class="col-form-label col-sm-3">Filtrar</label>
 				<input type="text" name="filtro" class="form-control" id="filtro" placeholder="Ingrese el producto">
 			</div>
-			<div class="col-3">
+			<div class="col-md-3">
+				<button type="submit" class="btn btn-secondary">
+					<i class="fa-solid fa-magnifying-glass text-white" style="font-size: 16pt"></i>
+				</button>
+			</div>
+		</form>
+		<form th:if="${idCliente == null}" method="get" th:action="@{/inventarios/listarProductos}" class="row g-3">
+			<div class="col-md-3  d-flex">
+				<label for="filtro" class="col-form-label col-sm-3">Filtrar</label>
+				<input type="text" name="filtro" class="form-control" id="filtro" placeholder="Ingrese el producto">
+			</div>
+			<div class="col-md-3">
 				<button type="submit" class="btn btn-secondary">
 					<i class="fa-solid fa-magnifying-glass text-white" style="font-size: 16pt"></i>
 				</button>
@@ -32,11 +43,11 @@
 
 		<div class="mt-4">
 			<div th:if="${productos != null and !productos.empty}" class="table-responsive">
-				<table class="table w-75 table-striped">
+				<table class="table w-100 table-striped">
 					<thead>
 						<tr class="bg-dark text-white">
 							<th>#</th>
-							<th th:if="${idCliente == null}"></th>
+							<th th:if="${idCliente == null}">Cliente</th>
 							<th>Almacén</th>
 							<th>SKU</th>
 							<th>Producto</th>
@@ -50,7 +61,7 @@
 					<tbody>
 						<tr th:each="pro : ${productos}">
 							<td class="align-middle">[[${#numbers.formatInteger(pro.idProducto,3)}]]</td>
-							<td th:if="${idCliente == null}">[[${pro.cliente}]]</td>
+							<td class="align-middle" th:if="${idCliente == null}">[[${pro.cliente}]]</td>
 							<td class="align-middle  text-center">[[${pro.almacen}]]</td>
 							<td class="align-middle">[[${pro.sku}]]</td>
 							<td class="align-middle">[[${pro.producto}]]</td>
@@ -72,7 +83,7 @@
                                         data-bulto=${pro.bulto},
                                         data-idUserLogin=${idUserLogin},
                                         data-fecha=${fecha},
-                                        data-idCli=${idCliente}" title="Ingresar Inventario">
+                                        data-idcli=${idCliente}" title="Ingresar Inventario">
 									<i class="fa-solid fa-file-signature text-dark fs-3"></i>
 								</a>
 							</td>
@@ -97,11 +108,11 @@
 			</div>
 		</div>
 
-		<a th:if="${idCliente != null}" th:href="@{/inventarios/listarClientes}" class="btn btn-danger  bg-danger  bg-gradient  mt-4"><i
-				class="fa-solid fa-arrow-left"></i> Ir a Clientes
+		<a th:if="${idCliente != null}" th:href="@{/inventarios/listarClientes}" class="btn btn-outline-secondary mt-4"><i
+				class="fa-solid fa-arrow-left"></i> Todos los Clientes
 		</a>
-		<a th:if="${idCliente == null}" th:href="@{/}" class="btn btn-danger  bg-danger  bg-gradient  mt-4"><i
-				class="fa-solid fa-arrow-left"></i> Ir al Menú
+		<a th:if="${idCliente == null}" th:href="@{/}" class="btn btn-outline-secondary  mt-4"><i
+				class="fa-solid fa-arrow-left"></i> Menú
 		</a>
 
 	</div>
@@ -118,13 +129,13 @@
 			var desc = $(this).data('desc');
 			var sal = $(this).data('saldo');
 			var salLabel = $(this).data('saldo') + ' ' + $(this).data('bulto');
-			var idCli = $(this).data('idCli');
+			var idcli = $(this).data('idcli');
 			//var fecha = $(this).data('fecha');
 
 			console.log("id prod : " + id);
 			console.log("sal : " + sal);
 			console.log("id desc : " + desc);
-			console.log("id cli : " + idCli);
+			console.log("id cli : " + idcli);
 
 			//enviando los valores al modal
 			$("#idProducto").val(id);

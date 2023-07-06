@@ -29,6 +29,7 @@
 		</form>
 
 		<section th:replace="layout/modales :: editar-inventario"></section>
+		<section th:replace="layout/modales :: eliminar-inventario"></section>
 
 		<div class="mt-4">
 			<div th:if="${inventarios != null and !inventarios.empty}" class="table-responsive">
@@ -57,19 +58,20 @@
 							<td class="align-middle text-danger text-end"
 								th:if="${(pro.saldo - pro.inventario) < 0 or (pro.saldo - pro.inventario) > 0}">
 								<strong>
-									[[${pro.saldo - pro.inventario}]]
+									[[${pro.inventario - pro.saldo}]]
 								</strong>
 							</td>
 							<td class="align-middle text-success text-end" th:if="${(pro.saldo - pro.inventario) == 0}">
 								<strong>
-									[[${pro.saldo - pro.inventario}]]
+									[[${pro.inventario - pro.saldo}]]
 								</strong>
 							</td>
 							<td class="align-middle">[[${pro.bulto}]]</td>
 							<td class="align-middle"><strong>[[${pro.usuario}]]</strong></td>
 
 							<td class="text-center align-middle">
-								<a class="btn btn-warning px-2" href="" data-bs-toggle="modal"
+								<a class="btn btn-warning px-2" href="" 
+									data-bs-toggle="modal"
 									data-bs-target="#modal-editar" th:attr="							
 										data-id=${pro.idProducto},
 										data-desc=${pro.producto},
@@ -83,7 +85,11 @@
 							</td>
 
 							<td class="text-center align-middle">
-								<a th:href="@{/inventarios/eliminar/}+${pro.idInventario}" title="Detalle Inventario">
+								<a th:href="@{/inventarios/eliminar/}+${pro.idInventario}" title="Detalle Inventario"
+									data-bs-toggle="modal"
+									data-bs-target="#modal-eliminar"
+									id="btnEliminar" th:attr="
+									data-idinventario=${pro.idInventario}">
 									<i class="fa-solid fa-square-xmark text-danger fs-1"></i>
 								</a>
 							</td>
@@ -101,12 +107,14 @@
 			</div>
 		</div>
 
-		<a  th:if="${idCliente != null}" th:href="@{'/inventarios/listarProductos/'+${idCliente}}"
-			class="btn btn-danger  bg-danger  bg-gradient mt-4"><i class="fa-solid fa-arrow-left"></i> Ir a Productos
-		</a>
-		<a th:if="${idCliente == null}" th:href="@{'/inventarios/listarProductos}"
-			class="btn btn-danger  bg-danger  bg-gradient mt-4"><i class="fa-solid fa-arrow-left"></i> Ir a Productos
-		</a>
+		<div class="col-auto">
+			<a th:href="@{'/inventarios/listarProductos/'+${idCliente}}" class="btn btn-outline-secondary  mt-4">
+				<i class="fa-solid fa-arrow-left"></i> <strong>Productos por cliente</strong>
+			</a>&nbsp;&nbsp;
+			<a th:href="@{/inventarios/listarProductos}" class=" btn btn-outline-warning mt-4">
+				<i class="fa-solid fa-arrow-left"></i> <strong>Todos los Productos</strong>
+			</a>
+		</div>
 
 	</div>
 
@@ -137,6 +145,17 @@
 			$("#cantInventario").val(inv);
 
 			$("#idUser").val(1);
+		});
+
+		$(document).on("click", "#btnEliminar", function () {
+
+			var idi = $(this).data('idinventario');
+			
+			console.log("id inventario eliminar "+ idi);
+			//enviando los valores al modal
+			$("#idInventElim").val(idi);
+
+
 		});
 
 

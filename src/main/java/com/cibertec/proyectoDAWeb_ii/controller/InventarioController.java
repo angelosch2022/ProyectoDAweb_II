@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class InventarioController {
 
 	public int idClientegb;
-	//public int idProductogb;
+	// public int idProductogb;
 
 	@Autowired
 	ClienteService clieService;
@@ -46,7 +46,7 @@ public class InventarioController {
 
 	@Autowired
 	VwInventarioService vwInventarioService;
-	
+
 	@Autowired
 	ProductoService proService;
 
@@ -86,14 +86,11 @@ public class InventarioController {
 	 * 
 	 * return "inventarios/listarClientes"; }
 	 */
-	
-	
-	
+
 	/*****
 	 * INVENTARIO PROPDUCTOS POR CLIENTE
-	 * ****/
-	
-	
+	 ****/
+
 	@GetMapping(value = "/inventarios/listarClientes")
 	public String pageInicial(@RequestParam(value = "filtro", required = false) String filtro, Model model) {
 		List<Cliente> clientes;
@@ -109,13 +106,9 @@ public class InventarioController {
 		return "inventarios/listarClientes";
 	}
 
-	
-	
 	// mostrar pagina listado de prodcutos por cliente
 	@GetMapping(value = "/inventarios/listarProductos/{idCliente}")
-	public String listarProductos(
-			@PathVariable(name = "idCliente") Integer id, 
-			Model model,
+	public String listarProductos(@PathVariable(name = "idCliente") Integer id, Model model,
 			@RequestParam(value = "filtro", required = false) String filtro) {
 
 		List<VwProducto> productos;
@@ -125,8 +118,7 @@ public class InventarioController {
 		} else {
 			productos = vwProductoService.GetProductsByIdCustomer(id);
 		}
-		
-			
+
 		var cliente = clieService.Get(id);
 
 		model.addAttribute("inventario", new Inventario());
@@ -135,166 +127,180 @@ public class InventarioController {
 		model.addAttribute("productos", productos);
 		model.addAttribute("idCliente", id);
 		model.addAttribute("nomCliente", cliente.getNomCliente());
-		
+
 		return "inventarios/listarProductos";
 	}
-	
-	
 
 	// guardar inventario
 	@PostMapping(value = "/inventarios/guardarInventario")
-	public String guardarInventario(
-			@ModelAttribute("inventario") Inventario inventario, 
-			Model model, 
-			@RequestParam(name = "idCliente", required = false)String idCliente) {
+	public String guardarInventario(@ModelAttribute("inventario") Inventario inventario, Model model,
+			@RequestParam(name = "idCliente", required = false) String idCliente) {
 
 		try {
 			inventario.setFechaInventario(new Date());
-			
+
 			var user = userLogin;
 			inventario.setUsuario(user);
-			
-			
+
 			var producto = proService.Get(inventario.getProducto().getIdProducto());
 			producto.setFechaUltimoInventario(new Date());
 			producto.setIsInventariado(true);
-			
-			var guardado = invService.Save(inventario, producto);			
-			
+
+			var guardado = invService.Save(inventario, producto);
+
 			if (guardado != null) {
-				
-				model.addAttribute("msj",
-						"Se registro el inventario del producto " + producto.getDescProducto() + " con "
-								+ guardado.getCantInventario() + " "
-								+ producto.getTipoBulto().getDescBulto());
+
+				model.addAttribute("msj", "Se registro el inventario del producto " + producto.getDescProducto()
+						+ " con " + guardado.getCantInventario() + " " + producto.getTipoBulto().getDescBulto());
 			}
 		} catch (Exception e) {
 
 			model.addAttribute("msj", "Error al guardar inventario, intente nuevamente");
 			log.error("ERROR inventario : " + e.getMessage());
-			if(idCliente == null) {
+			if (idCliente == null || idCliente.isEmpty()) {
 				return "inventarios/listarProductos";
-			}else {
-				return "inventarios/listarProductos" + idCliente;
+			} else {
+				return "inventarios/listarProductos/" + idCliente;
 			}
 		}
 
-		if(idCliente == null) {
-			log.info("id cliente nulo: "+idCliente);
+		if (idCliente == null || idCliente.isEmpty()) {
+			log.info("id cliente nulo: " + idCliente);
 			return "redirect:/inventarios/listarProductos";
-		}else {
-			return "redirect:/inventarios/listarProductos" + idCliente;
+		} else {
+			log.info("id cliente NO nulo: " + idCliente);
+			return "redirect:/inventarios/listarProductos/" + idCliente;
 		}
 	}
- 
-	
-	
-	
+
 	@GetMapping(value = "/inventarios/listarDetalle/{idProducto}")
-	public String listarDetalle(
-			Model model, 
-			@PathVariable(name = "idProducto") Integer idProd,
-			@RequestParam(name = "filtro",required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate filtro) {
-		
+	public String listarDetalle(Model model, @PathVariable(name = "idProducto") Integer idProd,
+			@RequestParam(name = "filtro", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate filtro) {
+
 		List<VwInventario> listado;
-		
-		if(filtro != null)
-		{
-			
+
+		if (filtro != null) {
 			Date date = Date.from(filtro.atStartOfDay(ZoneId.systemDefault()).toInstant());
-			
-			log.info("FITLRO: "+ date);
-			
+
 			listado = vwInventarioService.GetAllInventoryByIdAndDate(idProd, date);
-		}else {
+		} else {
 			listado = vwInventarioService.GetAllInventoryByIdProduct(idProd);
 		}
-		
+
 		var producto = proService.Get(idProd);
-		
-		for(var i : listado) {
-			log.info("los i son: "+ i.getIdInventario() +" - "+ i.getIdProducto());
-		}
-		
+
 		model.addAttribute("inventarios", listado);
 		model.addAttribute("descProducto", producto.getDescProducto());
 		model.addAttribute("inventario", new Inventario());
 		model.addAttribute("idProducto", idProd);
 		model.addAttribute("idCliente", producto.getCliente().getIdCliente());
-		
-		log.info("ID PRODUCTO PARA DETALLE: "+ idProd);
-		
-		
+
 		return "/inventarios/listarDetalle";
 	}
 
-	
 	// guardar inventario
-		@PostMapping(value = "/inventarios/guardarInventarioDetalle")
-		public String guardarInventarioDetalle(
-				@ModelAttribute("inventario") Inventario inventario, 
-				Model model) {
+	@PostMapping(value = "/inventarios/guardarInventarioDetalle")
+	public String guardarInventarioDetalle(@ModelAttribute("inventario") Inventario inventario, Model model) {
 
-			try {
-				
-				inventario.setFechaInventario(new Date());
-				
-				var user = userLogin;
-				inventario.setUsuario(user);
-				
-				
-				var producto = proService.Get(inventario.getProducto().getIdProducto());
-				producto.setFechaUltimoInventario(new Date());
-				producto.setIsInventariado(true);
-				
-				var guardado = invService.Save(inventario, producto);			
-				
-				if (guardado != null) {
-					
-					model.addAttribute("msj",
-							"Se modificó el inventario del producto corectamente" + producto.getDescProducto() + " con "
-									+ guardado.getCantInventario() + " "
-									+ producto.getTipoBulto().getDescBulto());
-				}
-			} catch (Exception e) {
+		try {
 
-				model.addAttribute("msj", "Error al guardar inventario, intente nuevamente");
-				log.error("ERROR inventario : " + e.getMessage());
-				return "inventarios/listarProductos/" + inventario.getProducto().getIdProducto();
+			inventario.setFechaInventario(new Date());
+
+			var user = userLogin;
+			inventario.setUsuario(user);
+
+			var producto = proService.Get(inventario.getProducto().getIdProducto());
+			producto.setFechaUltimoInventario(new Date());
+			producto.setIsInventariado(true);
+
+			var guardado = invService.Save(inventario, producto);
+
+			if (guardado != null) {
+
+				model.addAttribute("msj",
+						"Se modificó el inventario del producto corectamente" + producto.getDescProducto() + " con "
+								+ guardado.getCantInventario() + " " + producto.getTipoBulto().getDescBulto());
 			}
+		} catch (Exception e) {
 
-			return "redirect:/inventarios/listarDetalle/" + inventario.getProducto().getIdProducto();
+			model.addAttribute("msj", "Error al guardar inventario, intente nuevamente");
+			log.error("ERROR inventario : " + e.getMessage());
+			return "inventarios/listarProductos/" + inventario.getProducto().getIdProducto();
 		}
-	 
-		
-	
-	
-		
-		
-		
-		/*****
-		 * INVENTARIO TODOS LO PRODUCTOS
-		 * ****/
-		// mostrar pagina listado de prodcutos por cliente
-		@GetMapping(value = "/inventarios/listarProductos")
-		public String listarProductosTodosClientes( 
-				Model model,
-				@RequestParam(value = "filtro", required = false) String filtro) {
 
-			List<VwProducto> productos;
+		return "redirect:/inventarios/listarDetalle/" + inventario.getProducto().getIdProducto();
+	}
 
-			if (filtro != null && !filtro.isEmpty()) {
-				productos = vwProductoService.GetAllInventoryByProductOrCustomer(filtro);
+	// guardar inventario
+	@PostMapping(value = "/inventarios/eliminar")
+	public String eliminarInventario(Model model, @RequestParam(name = "idCliente", required = false) String idCliente,
+			@RequestParam(name = "idInventario", required = false) int idInventario) {
+		var inventario = vwInventarioService.Get(idInventario);
+		try {
+
+			invService.Delete(idInventario);
+
+			model.addAttribute("msj", "Se eliminó el inventario del producto " + inventario.getProducto());
+
+		} catch (Exception e) {
+
+			model.addAttribute("msj", "Error al eliminar inventario, intente nuevamente");
+			log.error("ERROR inventario : " + e.getMessage());
+			if (idCliente == null || idCliente.isEmpty()) {
+				return "inventarios/listarProductos";
 			} else {
-				productos = vwProductoService.GetAll();
+				return "inventarios/listarProductos/" + idCliente;
 			}
-			
-			model.addAttribute("inventario", new Inventario());
-			model.addAttribute("idUserLogin", userLogin.getIdUsuario());
-			model.addAttribute("fecha", new Date());
-			model.addAttribute("productos", productos);
-			
-			return "inventarios/listarProductos";
 		}
 
+		if (idCliente == null || idCliente.isEmpty()) {
+			log.info("id cliente nulo: " + idCliente);
+			return "redirect:/inventarios/listarDetalle";
+		} else {
+			log.info("id cliente NO nulo: " + idCliente);
+			return "redirect:/inventarios/listarDetalle/" + inventario.getIdProducto();
+		}
+	}
+
+	/*****
+	 * INVENTARIO TODOS LO PRODUCTOS
+	 ****/
+	// mostrar pagina listado de prodcutos por cliente
+	@GetMapping(value = "/inventarios/listarProductos")
+	public String listarProductosTodosClientes(Model model,
+			@RequestParam(value = "filtro", required = false) String filtro) {
+
+		List<VwProducto> productos;
+
+		if (filtro != null && !filtro.isEmpty()) {
+			productos = vwProductoService.GetAllInventoryByProductOrCustomer(filtro);
+		} else {
+			productos = vwProductoService.GetAll();
+		}
+
+		model.addAttribute("inventario", new Inventario());
+		model.addAttribute("idUserLogin", userLogin.getIdUsuario());
+		model.addAttribute("fecha", new Date());
+		model.addAttribute("productos", productos);
+
+		return "inventarios/listarProductos";
+	}
+
+	/*****
+	 * CONSULTA DE INVENTARIOS
+	 ****/
+	@GetMapping(value = "/inventarios/consultaInventarios")
+	public String consultaInventarios(@RequestParam(value = "filtro", required = false) String filtro, Model model) {
+		List<VwInventario> inventarios;
+
+		if (filtro != null && !filtro.isEmpty()) {
+			inventarios = vwInventarioService.GetAllInventoryByProductOrCustomer(filtro);
+		} else {
+			inventarios = vwInventarioService.GetAll();
+		}
+
+		model.addAttribute("inventarios", inventarios);
+
+		return "inventarios/consultaInventarios";
+	}
 }
