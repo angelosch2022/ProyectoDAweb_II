@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring.security">
+
+<head th:replace="layout/plantillas :: head">
+	<title></title>
+
+</head>
+
+<body class="container ">
+
+	<!--        <header th:replace="layout/plantillas :: header"></header>-->
+	<nav th:replace="layout/plantillas :: nav"></nav>
+
+	<div>
+		<h2 class="my-3  text-secondary"><strong>Consulta Inventarios</strong></h2>
+
+		<form method="get" th:action="@{/inventarios/consultaInventarios}" class="row g-3">
+			<div class="col-3 d-flex">
+				<label for="filtro" class="col-form-label col-sm-3">Filtrar</label>
+				<input type="text" name="filtro" class="form-control" id="filtro"
+					placeholder="Producto o nombre Cliente">
+			</div>
+			<div class="col-3">
+				<button type="submit" class="btn btn-secondary">
+					<i class="fa-solid fa-magnifying-glass text-white" style="font-size: 16pt"></i>
+				</button>
+			</div>
+		</form>
+
+		<div class="mt-4">
+			<div th:if="${inventarios != null and !inventarios.empty}" class="table-responsive">
+				<table class="table w-100 table-striped">
+					<thead>
+						<tr class="bg-dark text-white">
+							<th>#</th>
+							<th>Cliente</t>
+							<th>SKU</th>
+							<th>Producto</th>
+							<th>Fecha Inv.</th>
+							<th>Inventario</th>
+							<th>Saldo</th>
+							<th>Diferencia</th>
+							<th>Unidad</th>
+							<th>Realizado Por</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="pro : ${inventarios}">
+							<td class="align-middle">[[${#numbers.formatInteger(pro.idInventario,3)}]]</td>
+							<td class="align-middle">[[${pro.cliente}]]</td>
+							<td class="align-middle">[[${pro.sku}]]</td>
+							<td class="align-middle">[[${pro.producto}]]</td>
+							<td class="align-middle">
+								[[${#dates.format(pro.fechaInventario, 'dd-MM-yyyy HH:mm:ss')}]]
+							</td>
+							<td class="align-middle text-end">[[${pro.inventario}]]</td>
+							<td class="align-middle  text-center">[[${pro.saldo}]]</td>
+							<td class="align-middle text-danger text-end"
+								th:if="${(pro.saldo - pro.inventario) < 0 or (pro.saldo - pro.inventario) > 0}">
+								<strong>
+									[[${pro.inventario - pro.saldo}]]
+								</strong>
+							</td>
+							<td class="align-middle text-success text-end" th:if="${(pro.saldo - pro.inventario) == 0}">
+								<strong>
+									[[${pro.inventario - pro.saldo}]]
+								</strong>
+							</td>
+							<td class="align-middle">[[${pro.bulto}]]</td>
+							<td class="align-middle">
+								<strong>
+									[[${pro.usuario}]]
+								</strong>
+							</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+
+			<!-- AVISO DE INFORMACIÓN NO ENCONTRADA -->
+			<div th:if="${inventarios == null or inventarios.empty}" class="col-auto mt-4">
+				<div class="alert alert-warning alert-dismissible fade show" role="alert">
+					<strong>AVISO! </strong>No se encontraron registros
+				</div>
+			</div>
+		</div>
+
+		<div class="col-auto">
+			<a th:href="@{/}" class=" btn btn-outline-warning mt-4">
+				<i class="fa-solid fa-arrow-left"></i> <strong> Menú</strong>
+			</a>
+		</div>
+
+	</div>
+
+
+	<footer th:replace="layout/plantillas :: footer"></footer>
+
+	<script>
+		document.title = 'Consulta | Inventarios';
+	</script>
+</body>
+
+</html>

@@ -9,15 +9,16 @@
 
 <body>
 
+
 	<!-- AGREGAR INVENTARIO -->
 	<section th:fragment="agregar-inventario">
 		<div id="modal-agregar" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 
-					<div class="modal-header bg-primary text-white mb-4">
+					<div class="modal-header bg-light bg-gradient text-dark mb-4">
 						<h5 class="modal-title">
-							<i class="fa-solid fa-file-signature text-white fs-3"></i>
+							<i class="fa-solid fa-file-signature text-dark fs-3"></i>
 							INVENTARIO
 						</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -25,46 +26,32 @@
 
 					<form th:action="@{/inventarios/guardarInventario}" method="post" th:object="${inventario}"
 						class="was-validated">
-						<input type="hidden" id="idInventario" name="idInventario" th:field="*{idInventario}" >
-						<input type="hidden" id="idProducto" name="idProducto" th:field="*{producto.idProducto}" >
-						<input id="saldoProducto" type="hidden" disabled th:field="*{saldoProducto}">
-						<input id="idUser" type="hidden" disabled th:field="*{usuario.idUsuario}" value="1">
-						<input id="fecha" type="hidden" disabled th:field="*{fechaInventario}" >
-						
+						<input type="hidden" id="idCliente" name="idCliente" th:value="${idCliente}">
+						<input type="hidden" id="idInventario" name="idInventario" th:field="*{idInventario}">
+						<input type="hidden" id="idProducto" name="idProducto" th:field="*{producto.idProducto}">
+						<input id="saldoProducto" type="hidden" th:field="*{saldoProducto}">
+						<input id="idUser" type="hidden" th:field="*{usuario.idUsuario}" value="1">
+						<input id="fecha" type="hidden" disabled th:field="*{fechaInventario}">
+
 						<div class="modal-body">
-
-							<!--							<div class="row mb-3">-->
-							<!--								<label for="descProducto"-->
-							<!--									class="col-md-4 col-form-label text-start">Descripción:</label>-->
-							<!--								<div class="col-md-7">-->
-							<!--									<input id="descProducto" type="text"  class="form-control"  disabled>-->
-							<!--								</div>-->
-							<!--							</div>-->
-
-							<!--							<div class="row mb-3">-->
-							<!--								<label for="saldoProducto"-->
-							<!--									class="col-md-4 col-form-label text-start"> Saldo:</label>-->
-							<!--								<div class="col-md-3">-->
-							<!--									<input id="saldoProducto" type="text"  class="form-control"  disabled th:field="*{saldoProducto}">  -->
-							<!--									<label id="tipoBulto"></label>-->
-							<!--								</div>-->
-							<!--							</div>-->
 							<h3 id="descProductoLabel" class="text-center">Descripción</h3>
-							<h4 id="saldoProductoLabel" class="text-center">Saldo</h4>
+							<h4 id="saldoProductoLabel" class="text-center">Inventario</h4>
 
 							<div class="row mt-4 mb-2">
 								<label for="cantInventario" class="col-md-5 col-form-label text-start">Cantidad
-									Inventariada</label>
+									Inventario</label>
 								<div class="col-md-5">
 									<input type="text" class="form-control" id="cantInventario" style="width: 100%;"
-										required="true" th:field="*{cantInventario}" />
+										required="true" th:field="*{cantInventario}" title="Ingrese cantidad"
+										placeholder="cantidad" />
 								</div>
 							</div>
 
 						</div>
 						<div class="modal-footer bg-light">
 
-							<button href="#" class="btn btn-outline-secondary col-auto" data-bs-dismiss="modal">Cancelar</button>
+							<button href="#" class="btn btn-outline-secondary col-auto"
+								data-bs-dismiss="modal">Cancelar</button>
 							|
 							<input type="submit" th:value="Guardar" class="btn btn-warning  col-auto" />
 
@@ -75,33 +62,109 @@
 		</div>
 	</section>
 
-	<!--	 MODAL ELIMINAR INVENTARIO -->
-	<!--	<section th:fragment="eliminar-inventario">-->
-	<!--		<div class="modal fade" id="modal-eliminar" data-bs-backdrop="static" data-bs-keyboard="false">-->
-	<!--			<div class="modal-dialog modal-dialog-centered">-->
-	<!--				<div class="modal-content">-->
-	<!--					<div class="modal-header  bg-light">-->
-	<!--						<h4 class="modal-title text-secondary" id="">[[#{titulo.eliminar-cliente}]]</h4>-->
-	<!--						<button type="button" class="btn-close cancelar" data-bs-dismiss="modal"-->
-	<!--							aria-label="Close"></button>-->
-	<!--					</div>-->
 
-	<!--					<div class="modal-body">-->
-	<!--						<h5 class="text-secondary">[[#{mensaje.eliminar-registro}]]</h5>-->
-	<!--						<p>[[#{mensaje.no-puede-revertir}]]</p>-->
-	<!--					</div>-->
 
-	<!--					<div class="modal-footer bg-light">-->
-	<!--						<button class="btn btn-outline-secondary cancelar"-->
-	<!--							data-bs-dismiss="modal">[[#{accion.cancelar}]]</button>-->
-	<!--						<a th:href="@{/}" type="submit" class="btn btn-outline-danger"-->
-	<!--							id="btnEliminarFinal">[[#{accion.eliminar}]]</a>-->
-	<!--					</div>-->
 
-	<!--				</div>-->
-	<!--			</div>-->
-	<!--		</div>-->
-	<!--	</section>-->
+
+
+
+
+
+
+	<!-- EDITAR INVENTARIO -->
+	<section th:fragment="editar-inventario">
+		<div id="modal-editar" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+
+					<div class="modal-header bg-light bg-gradient text-secondary mb-4">
+						<h5 class="modal-title">
+							<i class="fa-solid fa-file-signature text-secondary fs-3"></i>
+							DETALLE INVENTARIO
+						</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+
+					<form th:action="@{/inventarios/guardarInventarioDetalle}" method="post" th:object="${inventario}"
+						class="was-validated">
+
+						<input type="hidden" id="idInventario" name="idInventario" th:field="*{idInventario}">
+						<input type="hidden" id="idProducto" name="idProducto" th:field="*{producto.idProducto}">
+						<input type="hidden" id="saldoProducto" name="saldo" th:field="*{saldoProducto}">
+						<input id="idUser" type="hidden" th:field="*{usuario.idUsuario}" value="1">
+						<input id="fecha" type="hidden" disabled th:field="*{fechaInventario}">
+
+						<div class="modal-body">
+							<h3 id="descProductoLabel" class="text-center">Descripción</h3>
+							<h4 id="saldoProductoLabel" class="text-center text-secondary">Saldo</h4>
+							<h4 id="invProductoLabel" class="text-center text-secondary">Inventariado</h4>
+
+							<div class="row mt-4 mb-2">
+								<label for="cantInventario" class="col-md-5 col-form-label text-start">Cantidad
+									Nueva</label>
+								<div class="col-md-5">
+									<input type="text" class="form-control" id="cantInventario" style="width: 100%;"
+										required="true" th:field="*{cantInventario}" title="Ingrese cantidad nueva"
+										placeholder="cantidad" />
+								</div>
+							</div>
+
+						</div>
+						<div class="modal-footer bg-light">
+
+							<button href="#" class="btn btn-outline-secondary col-auto"
+								data-bs-dismiss="modal">Cancelar</button>
+							|
+							<input type="submit" th:value="Guardar" class="btn btn-warning  col-auto" />
+
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+
+
+
+	<!-- ELIMINAR INVENTARIO -->
+	<section th:fragment="eliminar-inventario">
+		<div class="modal fade" id="modal-eliminar" data-bs-backdrop="static" data-bs-keyboard="false">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header  bg-light">
+						<h4 class="modal-title text-secondary" id="">
+							<i class="fa-regular fa-trash-can  text-secondary fs-3"></i>
+							Eliminar Inventario
+						</h4>
+						<button type="button" class="btn-close cancelar" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+
+					<div class="modal-body">
+						<h5 class="text-dark">Se eliminará el inventario seleccionado</h5>
+						<p class="text-secondary">Esta acción no se puede revertir, ¿Desea Continuar?</p>
+					</div>
+
+					<div class="modal-footer bg-light">
+						<button class="btn btn-outline-secondary cancelar" data-bs-dismiss="modal">Cancelar</button>
+						<form th:action="@{/inventarios/eliminar}" method="post">
+							<input type="hidden" name="idInventario" id="idInventElim">
+							<input type="hidden" name="idCliente" id="idCliente" th:value="${idCliente}">
+							<button type="submit" class="btn btn-outline-danger">Eliminar</button>
+						</form>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+
+
+
 
 	<!-- 2 ---------------------------------------------------------------------------------------------------------------------------------------------------- -->
 	<!-- AGREGAR - MODIFICAR CONTACTO -->
@@ -208,6 +271,8 @@
 			</div>
 		</div>
 	</section>
+
+
 
 	<!-- MODAL ELIMINAR CONTACTO -->
 	<section th:fragment="eliminar-contacto">

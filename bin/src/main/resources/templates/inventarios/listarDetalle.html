@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring.security">
+
+<head th:replace="layout/plantillas :: head">
+	<title>Inventario | Clientes</title>
+
+</head>
+
+<body class="container ">
+
+	<!--        <header th:replace="layout/plantillas :: header"></header>-->
+	<nav th:replace="layout/plantillas :: nav"></nav>
+
+	<div>
+		<h3 class="my-3  text-secondary">Detalle de Productos:</h3>
+		<h2 class="mb-3 "> <strong>Descripción Producto:</strong> [[${descProducto}]]</h2>
+
+		<form method="get" th:action="@{/inventarios/listarDetalle/}+${idProducto}" class="row g-3">
+			<div class="col-3 d-flex">
+				<label for="filtro" class="col-form-label col-sm-3">Filtrar</label>
+				<input type="date" name="filtro" class="form-control" id="filtro">
+			</div>
+			<div class="col-3">
+				<button type="submit" class="btn btn-secondary">
+					<i class="fa-solid fa-magnifying-glass text-white" style="font-size: 16pt"></i>
+				</button>
+			</div>
+		</form>
+
+		<section th:replace="layout/modales :: editar-inventario"></section>
+		<section th:replace="layout/modales :: eliminar-inventario"></section>
+
+		<div class="mt-4">
+			<div th:if="${inventarios != null and !inventarios.empty}" class="table-responsive">
+				<table class="table w-75 table-striped">
+					<thead>
+						<tr class="bg-dark text-white">
+							<th>#</th>
+							<th>Fecha Inv.</th>
+							<th>Inventario</th>
+							<th>Saldo</th>
+							<th>Diferencia</th>
+							<th>Unidad</th>
+							<th>Realizado Por</th>
+							<th>Editar</th>
+							<th>Eliminar</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="pro : ${inventarios}">
+							<td class="align-middle">[[${#numbers.formatInteger(pro.idInventario,3)}]]</td>
+							<td class="align-middle">
+								[[${#dates.format(pro.fechaInventario, 'dd-MM-yyyy HH:mm:ss')}]]
+							</td>
+							<td class="align-middle text-end">[[${pro.inventario}]]</td>
+							<td class="align-middle  text-center">[[${pro.saldo}]]</td>
+							<td class="align-middle text-danger text-end"
+								th:if="${(pro.saldo - pro.inventario) < 0 or (pro.saldo - pro.inventario) > 0}">
+								<strong>
+									[[${pro.inventario - pro.saldo}]]
+								</strong>
+							</td>
+							<td class="align-middle text-success text-end" th:if="${(pro.saldo - pro.inventario) == 0}">
+								<strong>
+									[[${pro.inventario - pro.saldo}]]
+								</strong>
+							</td>
+							<td class="align-middle">[[${pro.bulto}]]</td>
+							<td class="align-middle"><strong>[[${pro.usuario}]]</strong></td>
+
+							<td class="text-center align-middle">
+								<a class="btn btn-warning px-2" href="" 
+									data-bs-toggle="modal"
+									data-bs-target="#modal-editar" th:attr="							
+										data-id=${pro.idProducto},
+										data-desc=${pro.producto},
+                                        data-inventario=${pro.inventario},
+                                        data-saldo=${pro.saldo},
+                                        data-bulto=${pro.bulto},
+                                        data-idinv=${pro.idInventario},
+                                        data-fecha=${pro.fechaInventario}" title="Editar cantidad" id="btnInventario">
+									<i class="fa-solid fa-file-signature text-dark fs-3"></i>
+								</a>
+							</td>
+
+							<td class="text-center align-middle">
+								<a th:href="@{/inventarios/eliminar/}+${pro.idInventario}" title="Detalle Inventario"
+									data-bs-toggle="modal"
+									data-bs-target="#modal-eliminar"
+									id="btnEliminar" th:attr="
+									data-idinventario=${pro.idInventario}">
+									<i class="fa-solid fa-square-xmark text-danger fs-1"></i>
+								</a>
+							</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+
+			<!-- AVISO DE INFORMACIÓN NO ENCONTRADA -->
+			<div th:if="${inventarios == null or inventarios.empty}" class="col-auto mt-4">
+				<div class="alert alert-warning alert-dismissible fade show" role="alert">
+					<strong>AVISO! </strong>No se encontraron registros
+				</div>
+			</div>
+		</div>
+
+		<div class="col-auto">
+			<a th:href="@{'/inventarios/listarProductos/'+${idCliente}}" class="btn btn-outline-secondary  mt-4">
+				<i class="fa-solid fa-arrow-left"></i> <strong>Productos por cliente</strong>
+			</a>&nbsp;&nbsp;
+			<a th:href="@{/inventarios/listarProductos}" class=" btn btn-outline-warning mt-4">
+				<i class="fa-solid fa-arrow-left"></i> <strong>Todos los Productos</strong>
+			</a>
+		</div>
+
+	</div>
+
+
+	<footer th:replace="layout/plantillas :: footer"></footer>
+
+
+	<script type="text/javascript">
+
+		/*enviar los valores de la fila seleccionada al modal agregar-modificar*/
+		$(document).on("click", "#btnInventario", function () {
+
+			var id = $(this).data('idinv');
+			var idPro = $(this).data('id');
+			var desc = $(this).data('desc');
+			var saldo = $(this).data('saldo');
+			var inv = $(this).data('inventario');
+			var invLabel = 'Inventariado: ' + $(this).data('inventario') + ' ' + $(this).data('bulto');
+			var saldoLabel = 'Saldo: ' + $(this).data('saldo') + ' ' + $(this).data('bulto');
+
+			//enviando los valores al modal
+			$("#idProducto").val(idPro);
+			$("#idInventario").val(id);
+			$("#descProductoLabel").text(desc);
+			$("#invProductoLabel").text(invLabel);
+			$("#saldoProductoLabel").text(saldoLabel);
+			$("#saldoProducto").val(saldo);
+			$("#cantInventario").val(inv);
+
+			$("#idUser").val(1);
+		});
+
+		$(document).on("click", "#btnEliminar", function () {
+
+			var idi = $(this).data('idinventario');
+			
+			console.log("id inventario eliminar "+ idi);
+			//enviando los valores al modal
+			$("#idInventElim").val(idi);
+
+
+		});
+
+
+		/*enviar el foco al primer control*/
+		$(function () {
+			$('#modal-editar').on('shown.bs.modal', function () {
+				$('#cantInventario').trigger('focus');
+				//console.log('ingresó focus');
+			});
+		});
+	</script>
+
+	<script>
+		document.title = 'Inventario | Detalle';
+	</script>
+</body>
+
+</html>
