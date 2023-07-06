@@ -20,12 +20,12 @@
 
     <div class="login login-responsive" style="position: relative;">
         <div class="container mt-3 login-logo">
-            <img th:src="@{/img/logo.png}" alt="logo.png"/>
+            <img th:src="@{/img/logo_inventarios.png}" alt="logo.png"/>
         </div>
         <div class="container mt-3 login-form">
             <div class="row justify-content-center">
                 <div class="">
-                    <h3 class="text-center mb-2">[[#{login.name-login}]]</h3>                    
+                    <h3 class="text-center mb-2">Inicio de Sesión</h3>                    
                 </div>
                 <form method="post" th:action="@{/login}" name="frm">
                     <div class="mb-3">
@@ -43,7 +43,7 @@
                     </div>
 
                     <div class="d-grid gap-2">
-                        <input type="submit" th:value="#{accion.ingresar}" name="btnIngresar" id="btnIngresar" class="btn btn-primary"/>
+                        <input type="submit" th:value="Guardar" name="btnIngresar" id="btnIngresar" class="btn btn-dark"/>
                     </div>
                 </form>
             </div>

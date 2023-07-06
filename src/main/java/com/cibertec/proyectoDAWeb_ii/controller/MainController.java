@@ -20,6 +20,6 @@ public class MainController {
 		
 		log.info("Dentro de Index");
 		
-		return "home";
+		return "login";
 	}
 }
