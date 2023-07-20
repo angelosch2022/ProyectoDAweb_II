@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring.security">
 
-<head th:replace="layout/plantillas :: head">
+<head th:replace="~{layout/plantillas :: head}">
 	<title>Inventario | Clientes</title>
 
 </head>
@@ -10,16 +10,19 @@
 <body class="container ">
 
 	<!--        <header th:replace="layout/plantillas :: header"></header>-->
-	<nav th:replace="layout/plantillas :: nav"></nav>
+	<nav th:replace="~{layout/plantillas :: nav}"></nav>
 
 	<div>
 		<h3 class="my-3 text-secondary">Inventariar Productos</h3>
 		<h2 class="mb-3" th:if="${nomCliente!= null}"> <strong>Cliente:</strong> [[${nomCliente}]]</h2>
 
-		<form  th:if="${idCliente != null}" method="get" th:action="@{/inventarios/listarProductos/}+${idCliente}" class="row g-3">
+		<!-- PARA PRODUCTOS POR CLIENTE -->
+		<form th:if="${idCliente != null}" method="get" th:action="@{/inventarios/listarProductos/}+${idCliente}"
+			class="row g-3">
 			<div class="col-md-3 d-flex">
 				<label for="filtro" class="col-form-label col-sm-3">Filtrar</label>
-				<input type="text" name="filtro" class="form-control" id="filtro" placeholder="Ingrese el producto">
+				<input type="text" name="filtro" class="form-control" id="filtro" placeholder="Ingrese el producto"
+					th:value="${filtro}">
 			</div>
 			<div class="col-md-3">
 				<button type="submit" class="btn btn-secondary">
@@ -27,10 +30,13 @@
 				</button>
 			</div>
 		</form>
+
+		<!-- PARA PRODUCTOS EN GENERAL -->
 		<form th:if="${idCliente == null}" method="get" th:action="@{/inventarios/listarProductos}" class="row g-3">
 			<div class="col-md-3  d-flex">
 				<label for="filtro" class="col-form-label col-sm-3">Filtrar</label>
-				<input type="text" name="filtro" class="form-control" id="filtro" placeholder="Ingrese el producto">
+				<input type="text" name="filtro" class="form-control" id="filtro" placeholder="Ingrese el producto"
+					th:value="${filtro}">
 			</div>
 			<div class="col-md-3">
 				<button type="submit" class="btn btn-secondary">
@@ -39,10 +45,10 @@
 			</div>
 		</form>
 
-		<section th:replace="layout/modales :: agregar-inventario"></section>
+		<section th:replace="~{layout/modales :: agregar-inventario}"></section>
 
 		<div class="mt-4">
-			<div th:if="${productos != null and !productos.empty}" class="table-responsive">
+			<div th:if="${page.content != null and !page.content.empty}" class="table-responsive">
 				<table class="table w-100 table-striped">
 					<thead>
 						<tr class="bg-dark text-white">
@@ -59,8 +65,10 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="pro : ${productos}">
-							<td class="align-middle">[[${#numbers.formatInteger(pro.idProducto,3)}]]</td>
+						<tr th:each="pro,c : ${page.content}">
+
+							<td class="align-middle">[[${#numbers.formatInteger(page.number * page.size + c.index
+								+1,3)}]]</td>
 							<td class="align-middle" th:if="${idCliente == null}">[[${pro.cliente}]]</td>
 							<td class="align-middle  text-center">[[${pro.almacen}]]</td>
 							<td class="align-middle">[[${pro.sku}]]</td>
@@ -98,27 +106,92 @@
 
 					</tbody>
 				</table>
+
+				<div th:if="${idCliente != null}" class="text-center">
+					<a class="btn btn-dark" th:if="${page.number > 0}"
+						th:href="@{/inventarios/listarProductos/{idCliente}(idCliente=${idCliente}, page=0, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-backward"></i>
+					</a>
+					<a class="btn btn-dark" th:if="${page.number > 0}"
+						th:href="@{/inventarios/listarProductos/{idCliente}(idCliente=${idCliente}, page=${page.number - 1}, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-caret-left"></i>
+					</a>
+					<a class="btn btn-dark" th:if="${page.number < page.totalPages - 1}"
+						th:href="@{/inventarios/listarProductos/{idCliente}(idCliente=${idCliente}, page=${page.number + 1}, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-caret-right"></i>
+					</a>
+					<a class="btn btn-dark" th:if="${page.number < page.totalPages - 1}"
+						th:href="@{/inventarios/listarProductos/{idCliente}(idCliente=${idCliente}, page=${page.totalPages - 1}, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-forward"></i>
+					</a>
+
+				</div>
+
+
+				<div th:if="${idCliente == null}" class="text-center">
+					<a class="btn btn-dark" th:if="${page.number > 0}"
+						th:href="@{/inventarios/listarProductos(page=0, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-backward"></i>
+					</a>
+					<a class="btn btn-dark" th:if="${page.number > 0}"
+						th:href="@{/inventarios/listarProductos(page=${page.number - 1}, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-caret-left"></i>
+					</a>
+
+
+					<a class="btn btn-dark" th:if="${page.number < page.totalPages - 1}"
+						th:href="@{/inventarios/listarProductos(page=${page.number + 1}, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-caret-right"></i>
+					</a>
+					<a class="btn btn-dark" th:if="${page.number < page.totalPages - 1}"
+						th:href="@{/inventarios/listarProductos(page=${page.totalPages - 1}, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-forward"></i>
+					</a>
+				</div>
+
+				<div class="text-secondary" th:if="${page.content != null and !page.content.empty}">
+					Total de Registros:
+
+					<strong>
+						[[${(page.number)*page.size+page.content.size()}]]
+					</strong> de
+					<strong>
+						[[${page.totalElements}]]
+					</strong>
+				</div>
+				<div class="text-secondary" th:if="${page.content != null and !page.content.empty}">
+					Página:
+
+					<strong>
+						[[${page.number+1}]]
+					</strong> de
+					<strong>
+						[[${page.totalPages}]]
+					</strong>
+				</div>
+
 			</div>
 
 			<!-- AVISO DE INFORMACIÓN NO ENCONTRADA -->
-			<div th:if="${productos == null or productos.empty}" class="col-auto mt-4">
+			<div th:if="${page.content == null or page.content.empty}" class="col-auto mt-4">
 				<div class="alert alert-warning alert-dismissible fade show" role="alert">
 					<strong>AVISO! </strong>No se encontraron registros
 				</div>
 			</div>
 		</div>
 
-		<a th:if="${idCliente != null}" th:href="@{/inventarios/listarClientes}" class="btn btn-outline-secondary mt-4"><i
-				class="fa-solid fa-arrow-left"></i> Todos los Clientes
+		<a th:if="${idCliente != null}" th:href="@{/inventarios/listarClientes}"
+			class="btn btn-outline-dark mt-4"><i class="fa-solid fa-arrow-left"></i> Todos los Clientes
 		</a>
-		<a th:if="${idCliente == null}" th:href="@{/}" class="btn btn-outline-secondary  mt-4"><i
+		<a th:if="${idCliente == null}" th:href="@{/}" class="btn btn-outline-dark  mt-4"><i
 				class="fa-solid fa-arrow-left"></i> Menú
 		</a>
 
 	</div>
 
+	<div th:replace="~{layout/plantillas :: toast}"></div>
 
-	<footer th:replace="layout/plantillas :: footer"></footer>
+	<footer th:replace="~{layout/plantillas :: footer}"></footer>
 
 
 	<script type="text/javascript">
@@ -158,6 +231,19 @@
 				//console.log('ingresó focus');
 			});
 		});
+	</script>
+
+	<script>
+		window.addEventListener("load", () => {
+			//MOSTRAR UNA NOTIFICACION
+			$(document).ready(function () {
+				$('#liveToast').toast('show'); // Muestra la alerta
+
+				setTimeout(function () {
+					$('#liveToast').toast('hide'); // Oculta la alerta después de 6 segundos
+				}, 6000);
+			});
+		})
 	</script>
 
 	<script>

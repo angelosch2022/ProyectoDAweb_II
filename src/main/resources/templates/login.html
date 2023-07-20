@@ -1,56 +1,71 @@
 <!DOCTYPE html>
-<html   class="htmlLogin"
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:sec="http://www.thymeleaf.org/extras/spring.security"
-        >
-    <title>Login</title>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<html class="htmlLogin" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring.security">
 
-    <link rel="stylesheet" href="/webjars/font-awesome/6.3.0/css/all.css"/>
-    <link rel="stylesheet" href="/webjars/bootstrap/5.0.2/css/bootstrap.min.css"/>
+<head>
+	<title>Login</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+	<!--    <link rel="stylesheet" href="/webjars/font-awesome/6.3.0/css/all.css"/>-->
+	<!--    <link rel="stylesheet" href="/webjars/bootstrap/5.0.2/css/bootstrap.min.css"/>-->
 
-    <script src="/webjars/bootstrap/5.0.2/js/bootstrap.min.js"></script>
-    <style th:replace="layout/css_js :: estilos_login"></style>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+	<!--    <script src="/webjars/bootstrap/5.0.2/js/bootstrap.min.js"></script>-->
+
+	<style th:replace="~{layout/css_js :: estilos_login}"></style>
 
 </head>
+
 <body class="bodyLogin">
 
-    <div class="login login-responsive" style="position: relative;">
-        <div class="container mt-3 login-logo">
-            <img th:src="@{/img/logo_inventarios.png}" alt="logo.png"/>
-        </div>
-        <div class="container mt-3 login-form">
-            <div class="row justify-content-center">
-                <div class="">
-                    <h3 class="text-center mb-2">Inicio de Sesión</h3>                    
-                </div>
-                <form method="post" th:action="@{/login}" name="frm">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">USUARIO</label>
-                        <input type="text" value="" name="username" id="username" class="form-control" autofocus="autofocus" required="required"/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">CONTRASEÑA</label>
-                        <input type="password" name="password" id="password" class="form-control" style="width: 100%"  required="required"/>
-                    </div>
+	<div class="login login-responsive" style="position: relative;">
+		<div class="container mt-3 login-logo bg-logo">
+<!--			<img th:src="@{'logo_inventarios.png'}" alt="logo_inventario.png" />-->
+		</div>
+		<div class="container mt-3 login-form">
+			<div class="row justify-content-center">
+				<div class="">
+					<h3 class="text-center mb-2">Inicio de Sesión</h3>
+				</div>
+				<form method="post" th:action="@{/login}" name="frm">
 
-                    <div class="mb-3">
-                        <span class="text-danger text-center" th:if="${param.error != null}">Error de inicio de sesión</span>
-                        <span class="text-danger text-center" th:if="${loginError != null}">Error al iniciar sesión, intente nuevamente</span>
-                    </div>
+					<div class="mb-3">
+						<label for="username" class="form-label">USUARIO</label>
+						<input type="text" value="" name="username" id="username" class="form-control"
+							autofocus="autofocus" required="required" />
+					</div>
 
-                    <div class="d-grid gap-2">
-                        <input type="submit" th:value="Guardar" name="btnIngresar" id="btnIngresar" class="btn btn-dark"/>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+					<div class="mb-3">
+						<label for="password" class="form-label">CONTRASEÑA</label>
+						<input type="password" name="password" id="password" class="form-control" style="width: 100%"
+							required="required" />
+					</div>
+
+					<div class="mb-3">
+						<span class="text-danger text-center" th:if="${param.error != null}">
+							Error de inicio de sesión
+						</span>
+						<span class="text-danger text-center" th:if="${loginError}">
+							Error de usuario o password
+						</span>
+						<div  th:if="${param.logout}">
+							<div class="text-danger text-center">
+								Su sesión ha finalizado !!! 
+							</div>
+						</div>
+					</div>
+
+					<div class="d-grid gap-2">
+						<input type="submit" th:value="Ingresar" name="btnIngresar" id="btnIngresar"
+							class="btn btn-dark" />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
 </body>
 
-</body>
 </html>

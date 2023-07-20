@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring.security">
 
-<head th:replace="layout/plantillas :: head">
+<head th:replace="~{layout/plantillas :: head}">
 	<title>Inventario | Clientes</title>
 
 </head>
@@ -10,7 +10,7 @@
 <body class="container ">
 
 	<!--        <header th:replace="layout/plantillas :: header"></header>-->
-	<nav th:replace="layout/plantillas :: nav"></nav>
+	<nav th:replace="~{layout/plantillas :: nav}"></nav>
 
 	<div>
 		<h3 class="my-3  text-secondary">Detalle de Productos:</h3>
@@ -19,7 +19,7 @@
 		<form method="get" th:action="@{/inventarios/listarDetalle/}+${idProducto}" class="row g-3">
 			<div class="col-3 d-flex">
 				<label for="filtro" class="col-form-label col-sm-3">Filtrar</label>
-				<input type="date" name="filtro" class="form-control" id="filtro">
+				<input type="date" name="filtro" class="form-control" id="filtro" th:value="${filtro}">
 			</div>
 			<div class="col-3">
 				<button type="submit" class="btn btn-secondary">
@@ -28,12 +28,12 @@
 			</div>
 		</form>
 
-		<section th:replace="layout/modales :: editar-inventario"></section>
-		<section th:replace="layout/modales :: eliminar-inventario"></section>
+		<section th:replace="~{layout/modales :: editar-inventario}"></section>
+		<section th:replace="~{layout/modales :: eliminar-inventario}"></section>
 
-		<div class="mt-4">
-			<div th:if="${inventarios != null and !inventarios.empty}" class="table-responsive">
-				<table class="table w-75 table-striped">
+		<div class="mt-4 ">
+			<div th:if="${page.content != null and !page.content.empty}" class="table-responsive   w-75">
+				<table class="table table-striped">
 					<thead>
 						<tr class="bg-dark text-white">
 							<th>#</th>
@@ -43,13 +43,13 @@
 							<th>Diferencia</th>
 							<th>Unidad</th>
 							<th>Realizado Por</th>
-							<th>Editar</th>
-							<th>Eliminar</th>
+							<th  sec:authorize="hasRole('ROLE_ADMIN')">Editar</th>
+							<th  sec:authorize="hasRole('ROLE_ADMIN')">Eliminar</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="pro : ${inventarios}">
-							<td class="align-middle">[[${#numbers.formatInteger(pro.idInventario,3)}]]</td>
+						<tr th:each="pro,c : ${page.content}">
+							<td class="align-middle">[[${#numbers.formatInteger(page.number * page.size + c.index + 1,3)}]]</td>
 							<td class="align-middle">
 								[[${#dates.format(pro.fechaInventario, 'dd-MM-yyyy HH:mm:ss')}]]
 							</td>
@@ -69,9 +69,8 @@
 							<td class="align-middle">[[${pro.bulto}]]</td>
 							<td class="align-middle"><strong>[[${pro.usuario}]]</strong></td>
 
-							<td class="text-center align-middle">
-								<a class="btn btn-warning px-2" href="" 
-									data-bs-toggle="modal"
+							<td class="text-center align-middle"  sec:authorize="hasRole('ROLE_ADMIN')">
+								<a class="btn btn-warning px-2" href="" data-bs-toggle="modal"
 									data-bs-target="#modal-editar" th:attr="							
 										data-id=${pro.idProducto},
 										data-desc=${pro.producto},
@@ -80,27 +79,68 @@
                                         data-bulto=${pro.bulto},
                                         data-idinv=${pro.idInventario},
                                         data-fecha=${pro.fechaInventario}" title="Editar cantidad" id="btnInventario">
-									<i class="fa-solid fa-file-signature text-dark fs-3"></i>
+									<i class="fa-solid fa-pen-to-square text-dark fs-3"></i>
 								</a>
 							</td>
 
-							<td class="text-center align-middle">
+							<td class="text-center align-middle"  sec:authorize="hasRole('ROLE_ADMIN')">
 								<a th:href="@{/inventarios/eliminar/}+${pro.idInventario}" title="Detalle Inventario"
-									data-bs-toggle="modal"
-									data-bs-target="#modal-eliminar"
-									id="btnEliminar" th:attr="
-									data-idinventario=${pro.idInventario}">
-									<i class="fa-solid fa-square-xmark text-danger fs-1"></i>
+									data-bs-toggle="modal" data-bs-target="#modal-eliminar" id="btnEliminar" th:attr="
+									data-idinventario=${pro.idInventario}" class="btn btn-danger">
+									<i class="fa-solid fa-trash-can  text-white fs-4"></i>
 								</a>
 							</td>
 						</tr>
 
 					</tbody>
 				</table>
+				
+				
+				<div class="text-center">
+					<a class="btn btn-dark" th:if="${page.number > 0}"
+						th:href="@{/inventarios/listarDetalle/{idProducto}(idProducto=${idProducto}, page=0, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-backward"></i>
+					</a>
+					<a class="btn btn-dark" th:if="${page.number > 0}"
+						th:href="@{/inventarios/listarDetalle/{idProducto}(idProducto=${idProducto}, page=${page.number - 1}, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-caret-left"></i>
+					</a>
+					<a class="btn btn-dark" th:if="${page.number < page.totalPages - 1}"
+						th:href="@{/inventarios/listarDetalle/{idProducto}(idProducto=${idProducto}, page=${page.number + 1}, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-caret-right"></i>
+					</a>
+					<a class="btn btn-dark" th:if="${page.number < page.totalPages - 1}"
+						th:href="@{/inventarios/listarDetalle/{idProducto}(idProducto=${idProducto}, page=${page.totalPages - 1}, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-forward"></i>
+					</a>
+
+				</div>
+				
+				<div class="text-secondary" th:if="${page.content != null and !page.content.empty}">
+					Total de Registros:
+
+					<strong>
+						[[${(page.number)*page.size+page.content.size()}]]
+					</strong> de
+					<strong>
+						[[${page.totalElements}]]
+					</strong>
+				</div>
+				<div class="text-secondary" th:if="${page.content != null and !page.content.empty}">
+					Página:
+
+					<strong>
+						[[${page.number+1}]]
+					</strong> de
+					<strong>
+						[[${page.totalPages}]]
+					</strong>
+				</div>
+				
 			</div>
 
 			<!-- AVISO DE INFORMACIÓN NO ENCONTRADA -->
-			<div th:if="${inventarios == null or inventarios.empty}" class="col-auto mt-4">
+			<div th:if="${page.content == null or page.content.empty}" class="col-auto mt-4">
 				<div class="alert alert-warning alert-dismissible fade show" role="alert">
 					<strong>AVISO! </strong>No se encontraron registros
 				</div>
@@ -108,7 +148,7 @@
 		</div>
 
 		<div class="col-auto">
-			<a th:href="@{'/inventarios/listarProductos/'+${idCliente}}" class="btn btn-outline-secondary  mt-4">
+			<a th:href="@{'/inventarios/listarProductos/'+${idCliente}}" class="btn btn-outline-dark  mt-4">
 				<i class="fa-solid fa-arrow-left"></i> <strong>Productos por cliente</strong>
 			</a>&nbsp;&nbsp;
 			<a th:href="@{/inventarios/listarProductos}" class=" btn btn-outline-warning mt-4">
@@ -118,8 +158,9 @@
 
 	</div>
 
+	<div th:replace="~{layout/plantillas :: toast}"></div>
 
-	<footer th:replace="layout/plantillas :: footer"></footer>
+	<footer th:replace="~{layout/plantillas :: footer}"></footer>
 
 
 	<script type="text/javascript">
@@ -150,8 +191,8 @@
 		$(document).on("click", "#btnEliminar", function () {
 
 			var idi = $(this).data('idinventario');
-			
-			console.log("id inventario eliminar "+ idi);
+
+			console.log("id inventario eliminar " + idi);
 			//enviando los valores al modal
 			$("#idInventElim").val(idi);
 
@@ -166,6 +207,19 @@
 				//console.log('ingresó focus');
 			});
 		});
+	</script>
+	
+	<script>
+		window.addEventListener("load", () => {
+			//MOSTRAR UNA NOTIFICACION
+			$(document).ready(function () {
+				$('#liveToast').toast('show'); // Muestra la alerta
+
+				setTimeout(function () {
+					$('#liveToast').toast('hide'); // Oculta la alerta después de 6 segundos
+				}, 6000);
+			});
+		})
 	</script>
 
 	<script>

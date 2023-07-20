@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring.security">
+
+<head th:replace="~{layout/plantillas :: head}">
+	<title>Inventario | Clientes</title>
+
+</head>
+
+<body class="container ">
+
+	<nav th:replace="~{layout/plantillas :: nav}"></nav>
+
+	<div>
+		<h3 class="mt-4 mb-3 text-secondary">Mantenimiento de Usuarios</h3>
+
+		<form method="get" th:action="@{/mantenimientos/usuarios}" class="row g-3">
+			<div class="col-md-3  d-flex">
+				<label for="filtro" class="col-form-label col-sm-3">Filtrar</label>
+				<input type="text" name="filtro" class="form-control" id="filtro"
+					placeholder="Ingrese el nombre de usuario">
+			</div>
+			<div class="col-md-3">
+				<button type="submit" class="btn btn-dark">
+					<i class="fa-solid fa-magnifying-glass text-white" style="font-size: 16pt"></i>
+				</button>
+			</div>
+		</form>
+
+
+
+
+		<!--		<section th:replace="~{layout/modales :: agregar-inventario}"></section>-->
+
+
+
+
+		<div class="mt-4">
+			<div th:if="${usuarios != null and !usuarios.empty}" class="table-responsive">
+				<table class="table w-75 table-striped">
+					<thead>
+						<tr class="bg-dark text-white">
+							<th>#</th>
+							<th>Nombres</th>
+							<th>Apellidos</th>
+							<th>Email</th>
+							<th>Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="u,c : ${usuarios}">
+
+							<td class="align-middle">[[${#numbers.formatInteger(c.index+1,3)}]]</td>
+							<td class="align-middle" th:if="${idCliente == null}">[[${u.nomUsuario}]]</td>
+							<td class="align-middle">[[${u.apeUsuario}]]</td>
+							<td class="align-middle">[[${u.username}]]</td>
+							<td class="text-center align-middle">
+								<a class=" align-middle btn  px-2"
+									th:href="@{/mantenimientos/modificarUsuario/}+${u.idUsuario}"
+									title="Editar usuario">
+									<i class="fa-solid fa-pen-to-square text-warning fs-2"></i>
+								</a>
+								<!--								<a class=" align-middle btn  px-2" th:href="@{/mantenimientos/modificarUsuario/}+${u.idUsuario}" data-bs-toggle="modal"-->
+								<!--									data-bs-target="#modal-agregar-usuario" id="btnUsuario" th:attr="-->
+								<!--										data-id=${u.idUsuario},-->
+								<!--										data-nom=${u.nomUsuario},-->
+								<!--                                        data-ape=${u.apeUsuario},-->
+								<!--                                        data-email=${u.username}" title="Editar usuario">-->
+								<!--									<i class="fa-solid fa-pen-to-square text-warning fs-2"></i>-->
+								<!--								</a>-->
+
+								<a class="align-middle px-2 btn"
+									th:href="@{/mantenimientos/eliminarUsuario/}+${u.idUsuario}"
+									title="Eliminar usuario">
+									<i class="fa-solid fa-square-xmark  text-danger fs-2"></i>
+								</a>
+							</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+
+			<!-- AVISO DE INFORMACIÓN NO ENCONTRADA -->
+			<div th:if="${usuarios == null or usuarios.empty}" class="col-auto mt-4">
+				<div class="alert alert-warning alert-dismissible fade show" role="alert">
+					<strong>AVISO! </strong>No se encontraron registros
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<div th:replace="~{layout/plantillas :: toast}"></div>
+	<footer th:replace="~{layout/plantillas :: footer}"></footer>
+
+
+	<script type="text/javascript">
+
+		/*enviar los valores de la fila seleccionada al modal agregar-modificar*/
+		$(document).on("click", "#btnUsuario", function () {
+			var id = $(this).data('id');
+			var nom = $(this).data('nom');
+			var ape = $(this).data('ape');
+			var email = $(this).data('email');
+
+			console.log("id prod : " + nom);
+			console.log("sal : " + ape);
+			console.log("id desc : " + email);
+
+			//enviando los valores al modal
+			$("#idUsuario").val(id);
+			$("#nomUsuario").val(nom);
+			$("#apeUsuario").text(ape);
+			$("#username").text(email);
+		});
+
+
+		/*enviar el foco al primer control*/
+		$(function () {
+			$('#modal-agregar').on('shown.bs.modal', function () {
+				$('#cantInventario').trigger('focus');
+				//console.log('ingresó focus');
+			});
+		});
+	</script>
+
+	<script>
+		window.addEventListener("load", () => {
+			//MOSTRAR UNA NOTIFICACION
+			$(document).ready(function () {
+				$('#liveToast').toast('show'); // Muestra la alerta
+
+				setTimeout(function () {
+					$('#liveToast').toast('hide'); // Oculta la alerta después de 6 segundos
+				}, 6000);
+			});
+		})
+	</script>
+
+	<script>
+		document.title = 'Mantenimiento | Usuario';
+	</script>
+</body>
+
+</html>

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring.security">
 
-<head th:replace="layout/plantillas :: head">
+<head th:replace="~{layout/plantillas :: head}">
 	<title>Home</title>
 
 </head>
@@ -10,29 +10,10 @@
 <body class="container ">
 
 	<!--        <header th:replace="layout/plantillas :: header"></header>-->
-	<nav th:replace="layout/plantillas :: nav"></nav>
+		<nav th:replace="~{layout/plantillas :: nav}"></nav>
 	<div>
 		<h1 class="mt-5 mb-2">BIENVENIDO:</h1>
 		<h2 class="mb-4">Seleccione una opción</h2>
-<!--		<div class="row text-center mt-5 ">-->
-<!--			<div class="col-sm py-3">-->
-<!--				<img th:src="@{img/clientes.png}" style="max-width: 400px;">-->
-<!--				<p class="my-3"> <a th:href="@{inventarios/listarClientes}" class="btn btn-dark">Clientes</a></p>-->
-<!--			</div>-->
-<!--			<div class="col-sm py-3">-->
-<!--				<img th:src="@{img/productos.jpg}" style="max-width: 400px;">-->
-<!--				<p class="my-3"> <a th:href="@{inventarios/listarProductos}" class="btn btn-dark">Productos</a></p>-->
-<!--			</div>-->
-<!--			<div class="col-sm py-3">-->
-<!--				<img th:src="@{img/inventario.png}" style="max-width: 400px;">-->
-<!--				<p class="my-3"><a th:href="@{inventarios/listarInventarios}" class="btn btn-dark">Inventarios</a></p>-->
-<!--			</div>-->
-<!--			<div class="col-sm py-3">-->
-<!--				<img th:src="@{img/consultas.jpg}" style="max-width: 400px;">-->
-<!--				<p class="my-3"> <a th:href="@{inventarios/listarClientes}" class="btn btn-dark">Consultar</a></p>-->
-<!--			</div>-->
-
-<!--		</div>-->
 
 		<div class="row text-center mx-5">
 			<div class="col-md-4 a-scale mt-2">
@@ -76,7 +57,7 @@
 		</div>
 
 	</div>
-	<footer th:replace="layout/plantillas :: footer"></footer>
+	<footer th:replace="~{layout/plantillas :: footer}"></footer>
 
 	<script>
 		document.title = 'Inicio';

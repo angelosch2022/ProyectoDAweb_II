@@ -63,7 +63,11 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
-
+   <!-- configuracion manual DE SEGURIDDAD -->
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+        </dependency>
 
 
 		<!-- https://mvnrepository.com/artifact/org.webjars/font-awesome -->

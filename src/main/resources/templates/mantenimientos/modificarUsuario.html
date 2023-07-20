@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring.security">
+
+<head th:replace="~{layout/plantillas :: head}">
+	<title>Inventario | Clientes</title>
+
+</head>
+
+<body class="container">
+
+	<nav th:replace="~{layout/plantillas :: nav}"></nav>
+
+	<div class="mx-auto mt-4 panel">
+		<div>
+			<h3 class="my-3 text-secondary">[[${titleUsuario}]]</h3>
+			<h2 class="mb-3" th:if="${nomUsuario!= null}"> <strong>Usuario:</strong> [[${nomUsuario}]]</h2>
+		</div>
+
+		<form th:action="@{/mantenimientos/guardarUsuario}" method="post" th:object="${usuario}">
+			<input type="hidden" id="idusuario" th:field="*{idUsuario}">
+
+			<div class="mb-3 ">
+				<label for="idnomUsuario" class="form-label">Nombres</label>
+				<input type="text" class="form-control" id="idnomUsuario" placeholder="nombre usuario"
+					th:field="*{nomUsuario}" autofocus>
+			</div>
+			<div class="mb-3 ">
+				<label for="idapeUsuario" class="form-label">Apellidos</label>
+				<input type="text" class="form-control" id="idapeUsuario" placeholder="apellido usuario"
+					th:field="*{apeUsuario}">
+			</div>
+			<div class="mb-3 ">
+				<label for="idusername" class="form-label">E-mail</label>
+				<input type="text" class="form-control" id="idusername" placeholder="example@mail.com"
+					th:field="*{username}">
+			</div>
+			<!--			<div class="mb-4 ">-->
+			<!--				<label for="idpassword" class="form-label">Password</label>-->
+			<!--				<input type="password" class="form-control" id="idpassword" placeholder="*********"-->
+			<!--					th:field="*{password}">-->
+			<!--			</div>-->
+			<div class="mb-4">
+				<div class="input-group">
+					<input type="password" class="form-control" id="idpassword" placeholder="*********"
+						th:field="*{password}">
+					<button type="button" class="btn btn-outline-secondary" id="togglePassword">
+						<i id="passwordIcon" class="fa fa-eye"></i>
+					</button>
+				</div>
+				<span id="passwordValidationMessage" class="text-danger"></span>
+			</div>
+
+			<div class="mb-4 ">
+				<label for="idconfirmPassword" class="form-label">Confirmar Password</label>
+				<input type="password" class="form-control" id="idconfirmPassword" placeholder="*********">
+			</div>
+
+			<div class="mb-3">
+				<button id="btnGuardar" type="submit" class="btn btn-dark col-6" disabled>Guardar</button>
+			</div>
+
+		</form>
+
+		<a th:href="@{/mantenimientos/usuarios}" class="btn btn-danger col-6">
+			<i class="fa-solid fa-arrow-left"></i> Regresar
+		</a>
+
+		<div th:replace="~{layout/plantillas :: toast}"></div>
+
+	</div>
+
+	<footer th:replace="~{layout/plantillas :: footer}"></footer>
+
+
+	<script type="text/javascript">
+
+		/*enviar los valores de la fila seleccionada al modal agregar-modificar*/
+		$(document).on("click", "#btnUsuario", function () {
+			var id = $(this).data('id');
+			var nom = $(this).data('nom');
+			var ape = $(this).data('ape');
+			var email = $(this).data('email');
+
+			console.log("id prod : " + nom);
+			console.log("sal : " + ape);
+			console.log("id desc : " + email);
+
+			//enviando los valores al modal
+			$("#idUsuario").val(id);
+			$("#nomUsuario").val(nom);
+			$("#apeUsuario").text(ape);
+			$("#username").text(email);
+		});
+
+
+		/*enviar el foco al primer control*/
+		$(function () {
+			$('#modal-agregar').on('shown.bs.modal', function () {
+				$('#cantInventario').trigger('focus');
+				//console.log('ingresó focus');
+			});
+		});
+	</script>
+
+
+	<script>
+		window.addEventListener("load", () => {
+			//MOSTRAR UNA NOTIFICACION
+			$(document).ready(function () {
+				$('#liveToast').toast('show'); // Muestra la alerta
+
+				setTimeout(function () {
+					$('#liveToast').toast('hide'); // Oculta la alerta después de 6 segundos
+				}, 6000);
+			});
+		})
+	</script>
+
+
+	<script th:inline="javascript">
+		document.addEventListener('DOMContentLoaded', function () {
+			var togglePassword = document.getElementById('togglePassword');
+			var passwordInput = document.getElementById('idpassword');
+			var passwordIcon = document.getElementById('passwordIcon');
+			var confirmPasswordInput = document.getElementById('idconfirmPassword');
+			var btnGuardar = document.getElementById('btnGuardar');
+
+			togglePassword.addEventListener('click', function () {
+				if (passwordInput.type === 'password') {
+					passwordInput.type = 'text';
+					passwordIcon.className = 'fa fa-eye-slash';
+				} else {
+					passwordInput.type = 'password';
+					passwordIcon.className = 'fa fa-eye';
+				}
+			});
+
+			passwordInput.addEventListener('input', function () {
+				validatePassword();
+			});
+
+			confirmPasswordInput.addEventListener('input', function () {
+				validatePassword();
+			});
+
+			function validatePassword() {
+				var password = passwordInput.value;
+				var confirmPassword = confirmPasswordInput.value;
+				var validationMessage = document.getElementById('passwordValidationMessage');
+
+				if (password === confirmPassword) {
+					validationMessage.textContent = '';
+					btnGuardar.removeAttribute('disabled');
+				} else {
+					validationMessage.textContent = 'Las contraseñas no coinciden';
+					btnGuardar.setAttribute('disabled', true);
+				}
+			}
+		});
+	</script>
+
+
+	<script>
+		document.title = 'Mantenimiento | Usuario';
+	</script>
+</body>
+
+</html>

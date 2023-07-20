@@ -2,15 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring.security">
 
-<head th:replace="layout/plantillas :: head">
+<head th:replace="~{layout/plantillas :: head}">
 	<title></title>
 
 </head>
 
 <body class="container ">
 
-	<!--        <header th:replace="layout/plantillas :: header"></header>-->
-	<nav th:replace="layout/plantillas :: nav"></nav>
+	<nav th:replace="~{layout/plantillas :: nav}"></nav>
 
 	<div>
 		<h2 class="my-3  text-secondary"><strong>Consulta Inventarios</strong></h2>
@@ -18,23 +17,23 @@
 		<form method="get" th:action="@{/inventarios/consultaInventarios}" class="row g-3">
 			<div class="col-3 d-flex">
 				<label for="filtro" class="col-form-label col-sm-3">Filtrar</label>
-				<input type="text" name="filtro" class="form-control" id="filtro"
+				<input type="text" name="filtro" class="form-control" id="filtro" th:value="${filtro}"
 					placeholder="Producto o nombre Cliente">
 			</div>
 			<div class="col-3">
-				<button type="submit" class="btn btn-secondary">
+				<button type="submit" class="btn btn-dark">
 					<i class="fa-solid fa-magnifying-glass text-white" style="font-size: 16pt"></i>
 				</button>
 			</div>
 		</form>
 
 		<div class="mt-4">
-			<div th:if="${inventarios != null and !inventarios.empty}" class="table-responsive">
+			<div th:if="${page.content != null and !page.content.empty}" class="table-responsive">
 				<table class="table w-100 table-striped">
 					<thead>
 						<tr class="bg-dark text-white">
 							<th>#</th>
-							<th>Cliente</t>
+							<th>Cliente</t>S
 							<th>SKU</th>
 							<th>Producto</th>
 							<th>Fecha Inv.</th>
@@ -46,8 +45,10 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="pro : ${inventarios}">
-							<td class="align-middle">[[${#numbers.formatInteger(pro.idInventario,3)}]]</td>
+						<!--						<tr th:each="pro, c : ${inventarios}">-->
+						<tr th:each="pro, c : ${page.content}">
+							<td class="align-middle">[[${#numbers.formatInteger(page.number * page.size + c.index
+								+1,3)}]]</td>
 							<td class="align-middle">[[${pro.cliente}]]</td>
 							<td class="align-middle">[[${pro.sku}]]</td>
 							<td class="align-middle">[[${pro.producto}]]</td>
@@ -77,10 +78,52 @@
 
 					</tbody>
 				</table>
+				
+				<div th:if="${filtro != null or filtro !=''}" class="text-center">
+					<a class="btn btn-secondary" th:if="${page.number > 0}"
+						th:href="@{/inventarios/consultaInventarios(page=0, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-backward"></i>
+					</a>
+					<a class="btn btn-secondary" th:if="${page.number > 0}"
+						th:href="@{/inventarios/consultaInventarios(page=${page.number - 1}, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-caret-left"></i>
+					</a>
+
+
+					<a class="btn btn-secondary" th:if="${page.number < page.totalPages - 1}"
+						th:href="@{/inventarios/consultaInventarios(page=${page.number + 1}, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-caret-right"></i>
+					</a>
+					<a class="btn btn-secondary" th:if="${page.number < page.totalPages - 1}"
+						th:href="@{/inventarios/consultaInventarios(page=${page.totalPages - 1}, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
+						<i class="fa-solid fa-forward"></i>
+					</a>
+				</div>
+				<div class="text-secondary" th:if="${page.content != null and !page.content.empty}" >
+					Total de Registros:
+
+					<strong>
+						[[${(page.number)*page.size+page.content.size()}]]
+					</strong> de
+					<strong>
+						[[${page.totalElements}]]
+					</strong>
+				</div>
+				<div class="text-secondary" th:if="${page.content != null and !page.content.empty}">
+					Página:
+
+					<strong>
+						[[${page.number+1}]]
+					</strong> de
+					<strong>
+						[[${page.totalPages}]]
+					</strong>
+				</div>
 			</div>
 
+
 			<!-- AVISO DE INFORMACIÓN NO ENCONTRADA -->
-			<div th:if="${inventarios == null or inventarios.empty}" class="col-auto mt-4">
+			<div th:if="${page.content == null or page.content.empty}" class="col-auto mt-4">
 				<div class="alert alert-warning alert-dismissible fade show" role="alert">
 					<strong>AVISO! </strong>No se encontraron registros
 				</div>
@@ -88,7 +131,7 @@
 		</div>
 
 		<div class="col-auto">
-			<a th:href="@{/}" class=" btn btn-outline-warning mt-4">
+			<a th:href="@{/}" class=" btn btn-warning mt-4 col-2">
 				<i class="fa-solid fa-arrow-left"></i> <strong> Menú</strong>
 			</a>
 		</div>
@@ -96,7 +139,7 @@
 	</div>
 
 
-	<footer th:replace="layout/plantillas :: footer"></footer>
+	<footer th:replace="~{layout/plantillas :: footer}"></footer>
 
 	<script>
 		document.title = 'Consulta | Inventarios';
