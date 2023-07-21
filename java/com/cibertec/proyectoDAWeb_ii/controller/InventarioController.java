@@ -255,9 +255,9 @@ public class InventarioController {
 
 			log.error("ERROR inventario : " + e.getMessage());
 			if (idCliente == null || idCliente.isEmpty()) {
-				return "inventarios/listarProductos";
+				return "inventarios/listarDetalle";
 			} else {
-				return "inventarios/listarProductos/" + idCliente;
+				return "inventarios/listarDetalle/" + inventario.getIdProducto();
 			}
 		}
 

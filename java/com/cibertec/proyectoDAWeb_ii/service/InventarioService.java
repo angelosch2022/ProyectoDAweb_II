@@ -36,8 +36,18 @@ public class InventarioService {
 		return inventario;
 	}
 	
+	@Transactional
 	public void Delete(int id) {
+				
+		var producto = repository.findById(id).orElse(null).getProducto();
+		
 		repository.deleteById(id);
+		
+		var inventarios = repository.findByIdProducto(producto.getIdProducto());
+		
+		if(inventarios.size() == 0) {
+			producto.setIsInventariado(false);			
+			prodRepository.save(producto);	
+		}			
 	}
-
 }

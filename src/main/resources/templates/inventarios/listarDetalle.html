@@ -43,13 +43,14 @@
 							<th>Diferencia</th>
 							<th>Unidad</th>
 							<th>Realizado Por</th>
-							<th  sec:authorize="hasRole('ROLE_ADMIN')">Editar</th>
-							<th  sec:authorize="hasRole('ROLE_ADMIN')">Eliminar</th>
+							<th sec:authorize="hasRole('ROLE_ADMIN')">Editar</th>
+							<th sec:authorize="hasRole('ROLE_ADMIN')">Eliminar</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="pro,c : ${page.content}">
-							<td class="align-middle">[[${#numbers.formatInteger(page.number * page.size + c.index + 1,3)}]]</td>
+							<td class="align-middle">[[${#numbers.formatInteger(page.number * page.size + c.index +
+								1,3)}]]</td>
 							<td class="align-middle">
 								[[${#dates.format(pro.fechaInventario, 'dd-MM-yyyy HH:mm:ss')}]]
 							</td>
@@ -69,7 +70,7 @@
 							<td class="align-middle">[[${pro.bulto}]]</td>
 							<td class="align-middle"><strong>[[${pro.usuario}]]</strong></td>
 
-							<td class="text-center align-middle"  sec:authorize="hasRole('ROLE_ADMIN')">
+							<td class="text-center align-middle" sec:authorize="hasRole('ROLE_ADMIN')">
 								<a class="btn btn-warning px-2" href="" data-bs-toggle="modal"
 									data-bs-target="#modal-editar" th:attr="							
 										data-id=${pro.idProducto},
@@ -83,7 +84,7 @@
 								</a>
 							</td>
 
-							<td class="text-center align-middle"  sec:authorize="hasRole('ROLE_ADMIN')">
+							<td class="text-center align-middle" sec:authorize="hasRole('ROLE_ADMIN')">
 								<a th:href="@{/inventarios/eliminar/}+${pro.idInventario}" title="Detalle Inventario"
 									data-bs-toggle="modal" data-bs-target="#modal-eliminar" id="btnEliminar" th:attr="
 									data-idinventario=${pro.idInventario}" class="btn btn-danger">
@@ -94,8 +95,8 @@
 
 					</tbody>
 				</table>
-				
-				
+
+
 				<div class="text-center">
 					<a class="btn btn-dark" th:if="${page.number > 0}"
 						th:href="@{/inventarios/listarDetalle/{idProducto}(idProducto=${idProducto}, page=0, filtro=${filtro == null or filtro.isEmpty() ? '' : filtro})}">
@@ -115,7 +116,7 @@
 					</a>
 
 				</div>
-				
+
 				<div class="text-secondary" th:if="${page.content != null and !page.content.empty}">
 					Total de Registros:
 
@@ -136,7 +137,7 @@
 						[[${page.totalPages}]]
 					</strong>
 				</div>
-				
+
 			</div>
 
 			<!-- AVISO DE INFORMACIÓN NO ENCONTRADA -->
@@ -208,7 +209,7 @@
 			});
 		});
 	</script>
-	
+
 	<script>
 		window.addEventListener("load", () => {
 			//MOSTRAR UNA NOTIFICACION
@@ -221,6 +222,16 @@
 			});
 		})
 	</script>
+
+	<script>
+		const numeroInput = document.getElementById('cantInventario');
+
+		numeroInput.addEventListener('input', function (event) {
+			// Eliminar caracteres no numéricos
+			event.target.value = event.target.value.replace(/[^\d]/g, '');
+		});
+	</script>
+
 
 	<script>
 		document.title = 'Inventario | Detalle';

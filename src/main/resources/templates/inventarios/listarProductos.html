@@ -180,8 +180,8 @@
 			</div>
 		</div>
 
-		<a th:if="${idCliente != null}" th:href="@{/inventarios/listarClientes}"
-			class="btn btn-outline-dark mt-4"><i class="fa-solid fa-arrow-left"></i> Todos los Clientes
+		<a th:if="${idCliente != null}" th:href="@{/inventarios/listarClientes}" class="btn btn-outline-dark mt-4"><i
+				class="fa-solid fa-arrow-left"></i> Todos los Clientes
 		</a>
 		<a th:if="${idCliente == null}" th:href="@{/}" class="btn btn-outline-dark  mt-4"><i
 				class="fa-solid fa-arrow-left"></i> Menú
@@ -245,6 +245,16 @@
 			});
 		})
 	</script>
+
+	<script>
+		const numeroInput = document.getElementById('cantInventario');
+
+		numeroInput.addEventListener('input', function (event) {
+			// Eliminar caracteres no numéricos
+			event.target.value = event.target.value.replace(/[^\d]/g, '');
+		});
+	</script>
+
 
 	<script>
 		document.title = 'Inventario | Productos';
